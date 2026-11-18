@@ -8,7 +8,7 @@
 <meta name="description" content="國小學習數位島：選年級、登島練習國語、自然、社會，記錄每一次的學習。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bpmf+Huninn&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
 <style>
 /* 版面概念：左邊是一張俯瞰的群島海圖，右邊是像碼頭公告板的航線清單；進島後是一條由上而下的關卡航道。 */
 :root {
@@ -251,6 +251,138 @@ main {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
+/* 出題工作室 */
+.studio { display: grid; gap: 16px; max-width: 860px; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 12px; min-width: 0; }
+.panel h2 { font-size: 22px; }
+.panel a { color: var(--sea-deep); }
+.panel code { background: var(--sea-soft); padding: 1px 6px; border-radius: 6px; font-size: 14px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.field select, .field textarea { font: inherit; padding: 8px 12px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); min-width: 0; }
+.field input[type="file"] { padding: 6px; }
+.check { display: flex; gap: 8px; align-items: center; font-size: 15px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.status { font-size: 15px; color: var(--muted); }
+.status.bad { color: var(--bad); }
+.btn.small { padding: 4px 12px; font-size: 14px; }
+.file-btn { display: inline-flex; align-items: center; }
+.draft { margin: 0; padding-left: 24px; display: grid; gap: 10px; }
+.draft > li { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.dq { min-width: 0; }
+.dq-q { margin: 0 0 4px; font-weight: 700; }
+.dq-opts { margin: 0 0 4px; padding-left: 22px; list-style: upper-alpha; }
+.dq-opts li.ok { color: var(--ok); font-weight: 700; }
+.pill { display: inline-block; padding: 1px 10px; border-radius: 99px; font-size: 13px; background: var(--ok-bg); color: var(--ok); }
+.pill.warn { background: var(--bad-bg); color: var(--bad); }
+.note a { color: var(--sea-deep); font-weight: 700; }
+@media (max-width: 640px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } }
+
+/* 注音模式 */
+:root { --font-plain: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; }
+html.zy { --font-display: "Bpmf Huninn", "Noto Sans TC", sans-serif; --font-body: "Bpmf Huninn", "Noto Sans TC", sans-serif; }
+html.zy body { line-height: 1.85; }
+html.zy .no-zy, html.zy .no-zy * { font-family: var(--font-plain) !important; }
+.zy-chip[aria-pressed="true"] { background: var(--sea); border-color: var(--sea); color: #fff; }
+html.zy body { font-size: 18px; }
+html.zy .q-text { font-size: 25px; }
+html.zy .opt { font-size: 20px; }
+html.zy .explain { font-size: 17px; }
+
+/* ===== 繽紛動畫版 ===== */
+:root { --bg-top: #cdeeff; --bg-bot: #fff3dc; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg-top: #123545; --bg-bot: #1a2329; } }
+:root[data-theme="dark"] { --bg-top: #123545; --bg-bot: #1a2329; }
+body { background-color: var(--bg); background-image: linear-gradient(180deg, var(--bg-top) 0, var(--bg) 420px, var(--bg) 70%, var(--bg-bot) 100%); min-height: 100vh; }
+
+/* 地圖動畫 */
+.map-wrap { border: 4px solid #fff; box-shadow: 0 10px 30px rgba(20, 90, 130, .25); }
+.cloud { animation: cloud 70s linear infinite; }
+.cloud.c1 { animation-duration: 95s; }
+.cloud.c2 { animation-duration: 120s; }
+@keyframes cloud { from { transform: translateX(-140px); } to { transform: translateX(700px); } }
+.cloud.c0 { animation-delay: -22s !important; }
+.sun circle:first-child { transform-box: fill-box; transform-origin: center; animation: sunpulse 4s ease-in-out infinite; }
+@keyframes sunpulse { 50% { transform: scale(1.18); opacity: .8; } }
+.twinkle { transform-box: fill-box; transform-origin: center; animation: twinkle 2.6s ease-in-out infinite; }
+@keyframes twinkle { 0%, 100% { opacity: .15; transform: scale(.5); } 50% { opacity: 1; transform: scale(1.15); } }
+.route { animation: march 1.4s linear infinite; }
+@keyframes march { to { stroke-dashoffset: -24; } }
+.ripple { transform-box: fill-box; transform-origin: center; animation: ripple 4.5s ease-in-out infinite; }
+@keyframes ripple { 50% { transform: scale(1.07); opacity: .75; } }
+.bobber { animation: bobber 3.8s ease-in-out infinite; }
+@keyframes bobber { 50% { transform: translateY(-5px); } }
+.isle.picked { animation: picked .42s ease-out; }
+@keyframes picked { 45% { transform: scale(1.12); } 100% { transform: scale(1.04); } }
+.floaty { opacity: 0; animation: floaty 4s ease-in infinite; }
+@keyframes floaty { 0% { opacity: 0; transform: translateY(8px); } 20% { opacity: 1; } 80% { opacity: .9; } 100% { opacity: 0; transform: translateY(-36px); } }
+.flap { transform-box: fill-box; transform-origin: center; animation: flap .32s ease-in-out infinite alternate; }
+@keyframes flap { to { transform: scaleX(.3); } }
+.flag { transform-box: fill-box; transform-origin: left center; animation: flag 1.1s ease-in-out infinite alternate; }
+@keyframes flag { to { transform: skewY(9deg) scaleX(.82); } }
+.wing { transform-box: fill-box; transform-origin: center; animation: wing .45s ease-in-out infinite alternate; }
+@keyframes wing { to { transform: scaleY(-.5); } }
+.fish-jump { opacity: 0; transform-box: fill-box; transform-origin: center; animation: jump 7s ease-in-out infinite; }
+.fish.f2 .fish-jump { animation-delay: 3.6s; }
+@keyframes jump {
+  0%, 70% { opacity: 0; transform: translate(0, 0) rotate(-45deg); }
+  72% { opacity: 1; transform: translate(0, 0) rotate(-45deg); }
+  80% { transform: translate(26px, -40px) rotate(0deg); }
+  88% { opacity: 1; transform: translate(52px, 0) rotate(45deg); }
+  90%, 100% { opacity: 0; transform: translate(52px, 6px) rotate(45deg); }
+}
+
+/* 標題與首頁 */
+.hello { background: linear-gradient(90deg, #e8553f, #f2a01c 45%, #2f9a4c); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.daily { background: linear-gradient(115deg, #ffd96b, #ff9f6e); color: #3b1d00; box-shadow: 0 5px 0 #e2834a; transition: transform .15s; }
+.daily:hover { transform: translateY(-2px); }
+.daily:active { transform: translateY(3px); box-shadow: 0 2px 0 #e2834a; }
+.daily-go { animation: gopulse 1.8s ease-in-out infinite; }
+@keyframes gopulse { 50% { transform: scale(1.08); } }
+.daily.done .daily-go { animation: none; }
+.isle-row { grid-template-columns: 42px minmax(0, 1fr) auto; background: var(--card); background: color-mix(in srgb, var(--c) 9%, var(--card)); border-color: color-mix(in srgb, var(--c) 35%, var(--line)); transition: transform .15s, box-shadow .15s; }
+.isle-row:hover { transform: translateY(-2px); box-shadow: 0 6px 16px color-mix(in srgb, var(--c) 25%, transparent); }
+.isle-row .dot { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 19px; box-shadow: 0 3px 0 color-mix(in srgb, var(--c) 65%, #000); }
+.bar { height: 9px; }
+.bar span { background: repeating-linear-gradient(45deg, var(--c) 0 7px, color-mix(in srgb, var(--c) 70%, #fff) 7px 14px); background-size: 20px 20px; animation: stripes 1.2s linear infinite; }
+@keyframes stripes { to { background-position: 20px 0; } }
+
+/* 按鈕 */
+.btn { transition: transform .12s, box-shadow .12s; }
+.btn.primary { box-shadow: 0 4px 0 color-mix(in srgb, var(--c, var(--sea)) 62%, #000); font-weight: 700; }
+.btn.primary:hover { transform: translateY(-1px); }
+.btn.primary:active { transform: translateY(3px); box-shadow: 0 1px 0 color-mix(in srgb, var(--c, var(--sea)) 62%, #000); }
+
+/* 關卡卡片 */
+.unit { background: var(--card); background: linear-gradient(180deg, color-mix(in srgb, var(--c) 13%, var(--card)), var(--card) 65%); border-color: color-mix(in srgb, var(--c) 30%, var(--line)); transition: transform .18s, box-shadow .18s; animation: cardin .45s ease-out both; }
+.unit:hover { transform: translateY(-3px) rotate(-.4deg); box-shadow: 0 10px 22px color-mix(in srgb, var(--c) 22%, transparent); }
+@keyframes cardin { from { opacity: .3; transform: translateY(10px); } }
+.unit-no { justify-self: start; background: var(--c); color: #fff; padding: 2px 12px; border-radius: 99px; font-size: 14px; }
+.unit.done .unit-stars b { animation: twinkle-ui 1.6s ease-in-out infinite; display: inline-block; }
+@keyframes twinkle-ui { 50% { transform: scale(1.3) rotate(15deg); } }
+
+/* 作答 */
+.quiz-card { background: var(--card); background: linear-gradient(180deg, color-mix(in srgb, var(--c, var(--sea)) 12%, var(--card)), var(--card) 160px); border: 3px solid color-mix(in srgb, var(--c, var(--sea)) 35%, var(--line)); }
+.progress span { background: linear-gradient(90deg, #ffd43b, var(--c, var(--sea))); }
+.opt { transition: transform .12s, border-color .12s; }
+.opt:hover:not(:disabled) { transform: translateY(-2px); }
+.opt .key { background: color-mix(in srgb, var(--c, var(--sea)) 14%, var(--card)); border-color: color-mix(in srgb, var(--c, var(--sea)) 40%, var(--line)); }
+.opt.right { animation: pop .45s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes pop { 40% { transform: scale(1.04); } }
+.opt.shake { animation: shake .45s ease-in-out; }
+@keyframes shake { 20%, 60% { transform: translateX(-7px); } 40%, 80% { transform: translateX(7px); } }
+.plus-star { position: absolute; z-index: 61; pointer-events: none; font-weight: 900; font-size: 22px; color: var(--star); text-shadow: 0 2px 0 rgba(0, 0, 0, .15); animation: rise 1.1s ease-out forwards; }
+@keyframes rise { from { opacity: 1; transform: translateY(0) scale(.8); } to { opacity: 0; transform: translateY(-50px) scale(1.25); } }
+.confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
+.explain { animation: cardin .3s ease-out; }
+
+/* 成績 */
+.res-badge { display: flex; justify-content: center; gap: 10px; margin-top: 6px; }
+.big-star { font-size: 46px; line-height: 1; color: var(--line); transform: scale(0); animation: starpop .55s cubic-bezier(.3, 1.7, .5, 1) forwards; }
+.big-star.on { color: var(--star); text-shadow: 0 3px 0 color-mix(in srgb, var(--star) 60%, #000); }
+@keyframes starpop { to { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .big-star { transform: none; } }
+
 </style>
 </head>
 <body>
@@ -263,6 +395,7 @@ main {
     </a>
     <nav class="topnav" aria-label="主要">
       <button class="chip" id="gradeChip" type="button">選擇年級</button>
+      <button class="chip zy-chip" id="zyChip" type="button" aria-pressed="false" title="在國字旁邊顯示注音">注音</button>
       <a class="chip ghost" href="#history">學習紀錄</a>
       <button class="chip user" id="userChip" type="button">登入</button>
     </nav>
@@ -290,6 +423,7 @@ main {
         </button>
         <ul class="isle-list" id="isleList"></ul>
         <p class="note" id="syncNote"></p>
+        <p class="note"><a href="#studio">教師出題工作室</a>：上傳 PDF 試卷，讓 AI 出新題目。</p>
       </aside>
     </div>
   </section>
@@ -334,6 +468,7 @@ main {
   <section class="view" id="view-result" hidden>
     <div class="result-card">
       <p class="eyebrow" id="resLabel"></p>
+      <div class="res-badge" id="resBadge" aria-hidden="true"></div>
       <div class="score"><b id="resScore">0</b><span id="resTotal">/ 0</span></div>
       <p class="res-msg" id="resMsg"></p>
       <p class="res-stars" id="resStars"></p>
@@ -344,6 +479,9 @@ main {
       <div class="review" id="resReview"></div>
     </div>
   </section>
+
+  <!-- 出題工作室 -->
+  <section class="view" id="view-studio" hidden></section>
 
   <!-- 學習紀錄 -->
   <section class="view" id="view-history" hidden>
@@ -671,6 +809,602 @@ window.QB['g5a-social'] = {
 };
 
 </script>
+<!-- ===== 題庫：zhuyin.js ===== -->
+<script>
+/* 注音模式：使用「注音粉圓」字型（Bpmf Huninn，SIL OFL 授權）在國字旁顯示注音。
+ * 破音字：字型預設顯示最常用的讀音；下面的詞庫會在需要時加上「異體字選擇器」（IVS），
+ * 讓字型改顯示正確的讀音。數字代表字型中的第幾個替代讀音，d 代表維持預設讀音。
+ */
+(function () {
+  'use strict';
+  var WORDS = [
+    // 行 1=ㄏㄤˊ
+    '銀行1 行1列 排行1 行1業 內行1 外行1 行1情 一行1 兩行1 行1距 商行1 車行1 同行1 行1號',
+    // 長 1=ㄓㄤˇ
+    '長1大 成長1 生長1 校長1 班長1 家長1 長1輩 首長1 部長1 市長1 縣長1 長1官 年長1 長1老 族長1 船長1 隊長1 院長1 局長1 店長1 組長1 會長1 社長1 酋長1 鎮長1 里長1 村長1 鄉長1 增長1 長1出 長1高 長1成 助長1 長1子 長1女 兄長1 師長1 學長1 長1相 長1進 長1得 長1滿 長1了 生長1',
+    // 樂 1=ㄩㄝˋ
+    '音樂1 樂1器 樂1團 樂1曲 樂1譜 樂1隊 樂1章 樂1手 國樂1 管樂1 器樂1 樂1師 樂1音 聲樂1 弦樂1 打擊樂1',
+    // 重 1=ㄔㄨㄥˊ
+    '重1新 重1複 重1來 重1做 重1疊 重1逢 重1返 重1建 重1播 重1寫 重1讀 重1組 重1陽 雙重1 重1重1 重1整 重1申 重1演 重1溫',
+    // 還 1=ㄏㄨㄢˊ
+    '還1書 歸還1 還1錢 還1給 償還1 還1原 還1手 還1擊 奉還1 退還1 送還1 還1鄉 生還1 交還1',
+    // 為 1=ㄨㄟˋ
+    '因為1 為1了 為1什麼 為1何 為1此 為1國 為1民 為1你 為1我 為1他 為1她 為1誰 為1大家 為1別人 為1自己 為1妻子 為1丈夫',
+    // 的 1=ㄉㄧˊ 2=ㄉㄧˋ
+    '的1確 目的2 標的2',
+    // 了 1=ㄌㄧㄠˇ
+    '了1解 了1不起 了1不得 受不了1 了1然 明了1 不了1了 吃不了1 免不了1 少不了1 走不了1 跑不了1 不得了1 終了1 了1結 了1事 做不了1 去不了1 忘不了1',
+    // 著 1=ㄓㄨˋ 3=ㄓㄠˊ 4=ㄓㄨㄛˊ
+    '著1名 著1作 顯著1 名著1 著1稱 著1述 著3急 著3火 睡著3 著3涼 著3迷 找不著3 用不著3 犯不著3 著4陸 沉著4 執著4 著4手 著4重 著4想 衣著4',
+    // 都：預設改讀ㄉㄡ，下列詞讀ㄉㄨ
+    '首都d 都d市 都d會 古都d 京都d 成都d 國都d 都d城 建都d 定都d',
+    // 少 1=ㄕㄠˋ
+    '少1年 少1女 少1爺 少1婦 青少1年 少1將 少1校 少1林',
+    // 種 1=ㄓㄨㄥˋ（先列「這種、一種…」避免誤判「這種植物」）
+    '這種d 那種d 哪種d 一種d 兩種d 三種d 四種d 五種d 幾種d 多種d 各種d 某種d 每種d 種d類 品種d 物種d 人種d 種d子 播種d 種d族 同種d 火種d 菜種d 樹種d 稻種d 變種d 雜種d 特種d 種1植 種1樹 種1田 種1花 種1菜 種1稻 種1地 種1下 種1瓜 種1豆 種1甘蔗 栽種1 耕種1 種1出 種1了',
+    // 處 1=ㄔㄨˋ
+    '到處1 處1處1 好處1 壞處1 長處1 短處1 用處1 益處1 住處1 深處1 高處1 遠處1 近處1 四處1 各處1 何處1 去處1 處1所 辦事處1 低處1 此處1 原處1 相同之處1 不同之處1 之處1',
+    // 調 1=ㄉㄧㄠˋ
+    '調1查 聲調1 音調1 曲調1 腔調1 單調1 語調1 步調1 論調1 調1動 情調1 格調1 色調1 強調1 調1度 調1派 基調1',
+    // 傳 1=ㄓㄨㄢˋ
+    '傳1記 自傳1 經傳1 列傳1 外傳1 水滸傳1 左傳1',
+    // 中 1=ㄓㄨㄥˋ
+    '中1獎 打中1 射中1 看中1 猜中1 考中1 命中1 中1暑 中1毒 中1彈 中1選 擊中1 選中1 中1意 中1計 中1風',
+    // 便 1=ㄆㄧㄢˊ
+    '便1宜',
+    // 好 1=ㄏㄠˋ
+    '愛好1 好1奇 好1學 喜好1 嗜好1 好1客 好1動 好1勝 好1高騖遠 好1逸惡勞 好1吃懶做 好1管閒事 好1強',
+    // 數 1=ㄕㄨˇ
+    '數1一數 數1數 數1到 數1著 數1不清 數1不盡 數1錢 數1星星 數1了 屈指可數1 數1落 數1一 數1得',
+    // 降 1=ㄒㄧㄤˊ
+    '投降1 降1服 降1伏 歸降1 招降1 勸降1 受降1',
+    // 曲 1=ㄑㄩ
+    '彎曲1 曲1折 曲1線 委曲1 歪曲1 扭曲1 彎彎曲1曲1 曲1直 曲1尺',
+    // 背 1=ㄅㄟ
+    '背1書包 背1著 背1包 背1負 背1起 背1行李 背1孩子 背1黑鍋',
+    // 分 1=ㄈㄣˋ
+    '部分1 成分1 身分1 本分1 分1量 過分1 水分1 養分1 鹽分1 糖分1 天分1 緣分1 名分1 安分1 分1外 分1內',
+    // 會 1=ㄎㄨㄞˋ 2=ㄏㄨㄟˇ
+    '會1計 一會2兒 等會2兒',
+    // 教 1=ㄐㄧㄠ
+    '教1書 教1我 教1你 教1他 教1她 教1我們 教1大家 教1人 教1孩子 教1小朋友 教1學生 教1同學',
+    // 量 1=ㄌㄧㄤˊ
+    '測量1 量1體溫 量1身高 量1一量1 丈量1 量1角器 量1尺寸 量1杯 量1筒 估量1 打量1 衡量1 量1出 量1了',
+    // 相 1=ㄒㄧㄤˋ
+    '照相1 相1片 相1機 長相1 首相1 宰相1 真相1 相1貌 面相1 丞相1 亮相1',
+    // 應 1=ㄧㄥˋ
+    '反應1 回應1 適應1 效應1 應1用 應1對 供應1 對應1 感應1 呼應1 響應1 應1徵 應1變 應1答 順應1 因應1 報應1 答1應1',
+    // 當 1=ㄉㄤˋ
+    '恰當1 適當1 妥當1 上當1 當1作 當1成 當1做 當1真 當1鋪 穩當1 典當1',
+    // 間 1=ㄐㄧㄢˋ
+    '間1隔 間1斷 間1接 離間1 間1諜 間1歇 間1隙',
+    // 看 1=ㄎㄢ
+    '看1守 看1門 看1家 看1管 看1護 看1顧',
+    // 差 1=ㄔㄞ 2=ㄘ
+    '出差1 差1事 郵差1 差1遣 差1使 參2差2',
+    // 空 1=ㄎㄨㄥˋ
+    '空1白 空1閒 空1格 有空1 沒空1 空1地 空1位 空1隙 填空1 抽空1 空1缺 空1檔',
+    // 正 1=ㄓㄥ
+    '正1月',
+    // 興 1=ㄒㄧㄥˋ
+    '高興1 興1趣 興1致 掃興1 盡興1 即興1 敗興1 雅興1 助興1 興1高采烈 興1沖沖',
+    // 假 1=ㄐㄧㄚˋ
+    '放假1 假1期 假1日 請假1 寒假1 暑假1 休假1 假1單 春假1 連假1 度假1 例假1',
+    // 參 1=ㄕㄣ
+    '人參1 海參1',
+    // 省 1=ㄒㄧㄥˇ
+    '反省1 省1思 省1悟 不省1人事 自省1 省1察 內省1',
+    // 角 1=ㄐㄩㄝˊ
+    '角1色 主角1 配角1 角1逐 口角1 丑角1',
+    // 乾 1=ㄑㄧㄢˊ
+    '乾1坤 乾1隆',
+    // 盛 1=ㄕㄥˋ
+    '盛1大 茂盛1 豐盛1 旺盛1 興盛1 盛1行 強盛1 盛1開 盛1況 盛1產 盛1會 鼎盛1 全盛1 繁盛1 昌盛1 盛1名 盛1夏',
+    // 塞 1=ㄙㄜˋ 2=ㄙㄞˋ
+    '堵塞1 阻塞1 閉塞1 充塞1 茅塞1頓開 邊塞2 要塞2 塞2外 關塞2',
+    // 藏 1=ㄗㄤˋ
+    '西藏1 寶藏1 藏1族 三藏1',
+    // 給 1=ㄐㄧˇ
+    '供給1 補給1 給1予 自給1自足 配給1 給1付',
+    // 薄 1=ㄅㄛˋ
+    '薄1荷',
+    // 結 1=ㄐㄧㄝ
+    '結1實 結1巴',
+    // 覺 1=ㄐㄧㄠˋ
+    '睡覺1 午覺1 一覺1',
+    // 朝 1=ㄓㄠ
+    '朝1陽 朝1氣 朝1夕 朝1露 今朝1 朝1三暮四 一朝1一夕',
+    // 將 1=ㄐㄧㄤˋ
+    '將1領 將1軍 大將1 少1將1 中將1 上將1 名將1 武將1 主將1 猛將1 將1士 將1帥 守將1 老將1',
+    // 要 1=ㄧㄠ
+    '要1求 要1脅 要1挾',
+    // 更 1=ㄍㄥ
+    '更1新 更1改 更1換 變更1 更1正 更1衣 更1替 自力更1生 打更1 三更1 五更1 更1動 更1名',
+    // 強 1=ㄑㄧㄤˇ 2=ㄐㄧㄤˋ
+    '勉強1 強1迫 強1求 強1辯 牽強1 強1人所難 倔強2',
+    // 露 1=ㄌㄡˋ
+    '露1臉 露1面 露1一手 露1餡 露1馬腳',
+    // 奇 1=ㄐㄧ
+    '奇1數',
+    // 沒 1=ㄇㄛˋ
+    '沉沒1 淹沒1 埋沒1 出沒1 隱沒1 沒1收 覆沒1 吞沒1 神出鬼沒1 沒1落',
+    // 散 1=ㄙㄢˇ
+    '散1文 鬆散1 懶散1 散1漫 零散1 散1裝',
+    // 倒 1=ㄉㄠˇ
+    '倒1下 跌倒1 摔倒1 打倒1 倒1閉 推倒1 絆倒1 昏倒1 倒1塌 病倒1 倒1地 撞倒1 壓倒1 顛倒1 倒1楣 臥倒1 滑倒1',
+    // 轉 1=ㄓㄨㄢˋ
+    '轉1動 旋轉1 轉1圈 打轉1 自轉1 公轉1 團團轉1 轉1盤 轉1速 運轉1 迴轉1 空轉1 轉1來轉1去',
+    // 載 1=ㄗㄞˇ
+    '記載1 刊載1 登載1 轉載1 千載1難逢 一年半載1 連載1',
+    // 吐 1=ㄊㄨˋ
+    '嘔吐1',
+    // 難 1=ㄋㄢˋ
+    '災難1 苦難1 難1民 遇難1 患難1 避難1 逃難1 落難1 責難1 刁難1 受難1 罹難1 劫難1 空難1 海難1',
+    // 切 1=ㄑㄧㄝˋ
+    '一切1 切1實 親切1 急切1 迫切1 確切1 密切1 熱切1 關切1 懇切1 貼切1 切1記 切1勿 殷切1 切1身 真切1',
+    // 供 1=ㄍㄨㄥˋ
+    '口供1 供1品 供1奉 上供1 供1桌',
+    // 劃 1=ㄏㄨㄚˊ
+    '劃1船 劃1火柴 劃1破 劃1開 劃1傷 劃1過',
+    // 冠 1=ㄍㄨㄢˋ
+    '冠1軍 奪冠1 冠1名',
+    // 縫 1=ㄈㄥˋ
+    '縫1隙 裂縫1 門縫1 細縫1 牆縫1 天衣無縫1 見縫1插針 石縫1',
+    // 其他
+    '擔1子 重擔1 擔1仔麵 扁擔1 大1夫 喝1采 喝1止 恐嚇1 削1減 剝削1 鮮1少 鮮1為人知 漂1流 漂1浮 漂2白 率1領 率1先 坦率1 輕率1 直率1 草率1 表率1 統率1 埋1怨 號1叫 哀號1 呼號1 鐵騎1 標識1 旋1風 悶1悶不樂 苦悶1 煩悶1 納悶1 沉悶1 鬱悶1 挑1選 挑1水 挑1食 挑1剔 挑1擔 挑1出 挑1起 累1積 積累1 日積月累1 累1計 提1防 對稱1 相稱1 稱1職 稱1心 匀稱1 彈1簧 彈1琴 彈1性 彈1奏 彈1跳 彈1力 彈1開 反彈1 彈1指 彈1簧秤 豬圈1 羊圈1 繫1鞋帶 繫1上 哽咽1 可汗1'
+  ].join(' ');
+
+  var DICT = {}, MAXLEN = 1;
+  WORDS.split(/\s+/).forEach(function (tok) {
+    if (!tok) return;
+    var chars = [], marks = [];
+    for (var i = 0; i < tok.length; i++) {
+      var c = tok[i];
+      if (/[0-9d]/.test(c)) { marks[chars.length - 1] = c; continue; }
+      chars.push(c);
+    }
+    var w = chars.join('');
+    DICT[w] = marks;
+    if (w.length > MAXLEN) MAXLEN = w.length;
+  });
+  // 預設讀音就要換掉的字（字型預設 → 改用替代讀音）
+  var DEFAULT_ALT = { '都': '1' };
+  var VS = function (n) { return String.fromCodePoint(0xE01E0 + n); };
+
+  function annotate(str) {
+    if (!str || !/[一-鿿]/.test(str)) return str;
+    var out = '', i = 0, n = str.length;
+    while (i < n) {
+      var c = str[i];
+      // 已處理過（後面已有 IVS）就跳過
+      if (str.codePointAt(i + 1) >= 0xE0100 && str.codePointAt(i + 1) <= 0xE01EF) { out += c + str.substr(i + 1, 2); i += 3; continue; }
+      var matched = false;
+      for (var L = Math.min(MAXLEN, n - i); L >= 2; L--) {
+        var w = str.substr(i, L);
+        var m = DICT[w];
+        if (m) {
+          for (var k = 0; k < L; k++) {
+            out += w[k];
+            var mk = m[k];
+            if (mk && mk !== 'd') out += VS(+mk);
+            else if (!mk && DEFAULT_ALT[w[k]]) out += VS(+DEFAULT_ALT[w[k]]);
+          }
+          i += L; matched = true; break;
+        }
+      }
+      if (matched) continue;
+      if (c === '得') {
+        // 得到、獲得、值得……讀ㄉㄜˊ；動詞後的「得」多讀˙ㄉㄜ
+        var prev = str[i - 1] || '', next = str[i + 1] || '';
+        var de2 = /[到分意獎知勝失逞宜體當罪力救]/.test(next) || /[獲取值難心贏習自不所]/.test(prev);
+        out += c + (de2 || !prev || !/[一-鿿]/.test(prev) ? '' : VS(1));
+      } else if (c === '地') {
+        // 「慢慢地」「開心地」：前面是疊字或形容詞時讀˙ㄉㄜ
+        var p1 = str[i - 1] || '', p2 = str[i - 2] || '';
+        var nx = str[i + 1] || '';
+        var de = (p1 && p1 === p2) || (/[心興真力細聲靜然氣意快]/.test(p1) && !/[方區球面上下底點圖形震理位址主]/.test(nx));
+        out += c + (de ? VS(1) : '');
+      } else if (DEFAULT_ALT[c]) {
+        out += c + VS(+DEFAULT_ALT[c]);
+      } else {
+        out += c;
+      }
+      i++;
+    }
+    return out;
+  }
+
+  /* ---------- 套用到畫面 ---------- */
+  var on = false;
+  var SKIP = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, INPUT: 1, SELECT: 1, OPTION: 1, CODE: 1, TITLE: 1 };
+  function walk(root) {
+    if (!on || !root) return;
+    var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        for (var p = n.parentNode; p && p !== root.parentNode; p = p.parentNode) {
+          if (SKIP[p.nodeName] || (p.classList && p.classList.contains('no-zy'))) return NodeFilter.FILTER_REJECT;
+        }
+        return n.__zy === n.nodeValue ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var list = [], node;
+    while ((node = tw.nextNode())) list.push(node);
+    list.forEach(function (t) { var v = annotate(t.nodeValue); if (v !== t.nodeValue) t.nodeValue = v; t.__zy = t.nodeValue; });
+  }
+  var pending = false;
+  var observer = new MutationObserver(function () {
+    if (!on || pending) return;
+    pending = true;
+    requestAnimationFrame(function () { pending = false; walk(document.body); });
+  });
+
+  function set(v) {
+    on = !!v;
+    document.documentElement.classList.toggle('zy', on);
+    if (on) { walk(document.body); observer.observe(document.body, { childList: true, subtree: true, characterData: true }); }
+    else observer.disconnect();
+  }
+
+  /* 考讀音的題目：加了注音會洩漏答案，整題改用一般字型 */
+  function revealsAnswer(text) { return /[ㄅ-ㄩˊˇˋ˙]|讀音|怎麼讀|讀作|唸作|念作|注音|拼音/.test(text || ''); }
+
+  window.Zhuyin = { set: set, isOn: function () { return on; }, annotate: annotate, revealsAnswer: revealsAnswer };
+})();
+
+</script>
+<!-- ===== 教師出題工作室 ===== -->
+<script>
+/* 教師出題工作室：上傳 PDF 試卷 → Claude AI 出題 → 存成題庫 → 發布到網站 */
+(function () {
+  'use strict';
+  var MODEL = 'claude-opus-5-5';
+  var KEY_STORE = 'islands.studio.apikey';
+  var GH_STORE = 'islands.studio.github';
+  var draft = null;      // 剛產生、還沒加入題庫的題目
+  var busy = false;
+
+  function $(id) { return document.getElementById(id); }
+  function A() { return window.IslandApp; }
+  function esc(s) { return A().esc(s); }
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  var sessionKey = '';
+  function apiKey() { return sessionKey || lsGet(KEY_STORE) || ''; }
+
+  function ghDefaults() {
+    var saved = {}; try { saved = JSON.parse(lsGet(GH_STORE) || '{}'); } catch (e) {}
+    var owner = saved.owner || '', repo = saved.repo || '';
+    if (!owner && /\.github\.io$/.test(location.hostname)) {
+      owner = location.hostname.split('.')[0];
+      repo = location.pathname.split('/')[1] || (owner + '.github.io');
+    }
+    return { owner: owner, repo: repo, branch: saved.branch || 'main', token: saved.token || '' };
+  }
+
+  /* ---------- 畫面 ---------- */
+  function render() {
+    var v = $('view-studio');
+    var app = A(), gk = app.currentGrade();
+    var gradeOpts = app.GRADES.map(function (g) { return '<option value="' + g.key + '"' + (g.key === gk ? ' selected' : '') + '>' + g.label + '</option>'; }).join('');
+    var subjOpts = app.SUBJECTS.map(function (s) { return '<option value="' + s.key + '">' + s.name + '</option>'; }).join('');
+    var gh = ghDefaults();
+    var hasKey = !!apiKey();
+    v.innerHTML =
+      '<div class="subject-head"><a class="back" href="#home">← 回群島</a><div class="subject-title"><p class="eyebrow">教師專用</p><h1>出題工作室</h1></div></div>' +
+      '<div class="studio">' +
+
+      '<section class="panel"><h2>1. AI 金鑰</h2>' +
+      '<p class="hint">出題使用 Anthropic 的 Claude AI，需要你自己的 API 金鑰（到 <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a> 申請並儲值）。金鑰只存在這台電腦的瀏覽器裡，不會寫進網站檔案，學生也看不到。</p>' +
+      '<div class="field"><label for="stKey">API 金鑰</label><input id="stKey" type="password" autocomplete="off" placeholder="sk-ant-…" value="' + (hasKey ? '••••••••（已設定）' : '') + '"></div>' +
+      '<label class="check"><input type="checkbox" id="stRemember"' + (lsGet(KEY_STORE) ? ' checked' : '') + '> 記住在這台電腦（公用電腦請不要勾）</label>' +
+      '<div class="row"><button class="btn" type="button" id="stKeySave">儲存金鑰</button><button class="btn" type="button" id="stKeyClear">清除金鑰</button></div>' +
+      '<p class="hint">費用參考：一份 2～4 頁的試卷出 20～30 題，大約 0.2～0.5 美元（約新臺幣 6～15 元），直接從你的 Anthropic 帳戶扣款。</p>' +
+      '</section>' +
+
+      '<section class="panel"><h2>2. 上傳試卷，AI 出題</h2>' +
+      '<div class="grid2">' +
+      '<div class="field"><label for="stGrade">年級</label><select id="stGrade">' + gradeOpts + '</select></div>' +
+      '<div class="field"><label for="stSubj">科目（放進哪座島）</label><select id="stSubj">' + subjOpts + '</select></div>' +
+      '</div>' +
+      '<div class="field"><label for="stTitle">關卡名稱（學生會看到）</label><input id="stTitle" maxlength="40" placeholder="例如：第三單元 水溶液 段考複習"></div>' +
+      '<div class="field"><label for="stPdf">試卷 PDF（30 MB 以內）</label><input id="stPdf" type="file" accept="application/pdf,.pdf"></div>' +
+      '<div class="grid2">' +
+      '<div class="field"><label for="stN">題數</label><input id="stN" type="number" min="5" max="60" step="1" value="20"></div>' +
+      '<div class="field"><label for="stLevel">難度</label><select id="stLevel"><option value="和試卷差不多">和試卷差不多</option><option value="比試卷簡單一些，適合複習基礎">簡單一些</option><option value="比試卷難一些，多一些思考與應用題">難一些</option></select></div>' +
+      '</div>' +
+      '<div class="field"><label for="stExtra">補充要求（可不填）</label><textarea id="stExtra" rows="2" placeholder="例如：多出成語題、不要出看圖題、加入生活應用"></textarea></div>' +
+      '<div class="row"><button class="btn primary" type="button" id="stGo">開始出題</button><span class="status" id="stStatus" role="status"></span></div>' +
+      '</section>' +
+
+      '<section class="panel" id="stDraftPanel" hidden><h2>3. 檢查題目</h2>' +
+      '<p class="hint">請逐題看過，不合適的按「刪除」。確認後按「加入題庫」，學生就能在島上練習。</p>' +
+      '<ol class="draft" id="stDraft"></ol>' +
+      '<div class="row"><button class="btn primary" type="button" id="stAdd">加入題庫</button><button class="btn" type="button" id="stDiscard">全部放棄</button></div>' +
+      '</section>' +
+
+      '<section class="panel"><h2>AI 題庫</h2><div id="stSets"></div>' +
+      '<div class="row"><button class="btn" type="button" id="stExport">匯出題庫檔</button><label class="btn file-btn">匯入題庫檔<input type="file" id="stImport" accept="application/json,.json" hidden></label></div>' +
+      '</section>' +
+
+      '<section class="panel"><h2>發布到網站（讓所有學生看到）</h2>' +
+      '<p class="hint">「加入題庫」後的題目先存在這台電腦。按下「發布」會把題庫寫進 GitHub repo 的 <code>custom-questions.json</code>，大約 1 分鐘後，學生在任何電腦重新整理網頁就看得到。需要一組只能修改這個 repo 的 GitHub 權杖（Fine-grained token，權限選 Contents：Read and write）。</p>' +
+      '<div class="grid3">' +
+      '<div class="field"><label for="ghOwner">GitHub 帳號</label><input id="ghOwner" value="' + esc(gh.owner) + '"></div>' +
+      '<div class="field"><label for="ghRepo">Repo 名稱</label><input id="ghRepo" value="' + esc(gh.repo) + '"></div>' +
+      '<div class="field"><label for="ghBranch">分支</label><input id="ghBranch" value="' + esc(gh.branch) + '"></div>' +
+      '</div>' +
+      '<div class="field"><label for="ghToken">GitHub 權杖</label><input id="ghToken" type="password" autocomplete="off" placeholder="github_pat_…" value="' + (gh.token ? '••••••••（已設定）' : '') + '"></div>' +
+      '<div class="row"><button class="btn primary" type="button" id="ghPublish">發布到網站</button><span class="status" id="ghStatus" role="status"></span></div>' +
+      '</section>' +
+      '</div>';
+
+    $('stKeySave').onclick = function () {
+      var val = $('stKey').value.trim();
+      if (!val || val.indexOf('•') === 0) { app.toast('請貼上金鑰'); return; }
+      sessionKey = val;
+      lsSet(KEY_STORE, $('stRemember').checked ? val : null);
+      $('stKey').value = '••••••••（已設定）';
+      app.toast($('stRemember').checked ? '金鑰已存在這台電腦' : '金鑰只在這次開啟網頁時有效');
+    };
+    $('stKeyClear').onclick = function () { sessionKey = ''; lsSet(KEY_STORE, null); $('stKey').value = ''; app.toast('已清除金鑰'); };
+    $('stGo').onclick = generate;
+    $('stAdd').onclick = addDraft;
+    $('stDiscard').onclick = function () { draft = null; renderDraft(); };
+    $('stExport').onclick = exportSets;
+    $('stImport').onchange = importSets;
+    $('ghPublish').onclick = publish;
+    renderDraft(); renderSets();
+  }
+
+  function setStatus(id, msg, bad) { var el = $(id); if (!el) return; el.textContent = msg; el.classList.toggle('bad', !!bad); }
+
+  /* ---------- 讀 PDF ---------- */
+  function readB64(file) {
+    return new Promise(function (res, rej) {
+      var r = new FileReader();
+      r.onload = function () { var s = String(r.result); res(s.slice(s.indexOf(',') + 1)); };
+      r.onerror = function () { rej(new Error('讀取 PDF 失敗')); };
+      r.readAsDataURL(file);
+    });
+  }
+
+  /* ---------- 呼叫 Claude ---------- */
+  var SCHEMA = {
+    type: 'object',
+    properties: {
+      questions: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            question: { type: 'string' },
+            options: { type: 'array', items: { type: 'string' } },
+            answer_index: { type: 'integer' },
+            explanation: { type: 'string' }
+          },
+          required: ['question', 'options', 'answer_index', 'explanation'],
+          additionalProperties: false
+        }
+      }
+    },
+    required: ['questions'],
+    additionalProperties: false
+  };
+
+  function buildPrompt(o) {
+    return '附件是一份臺灣國小「' + o.gradeLabel + '」「' + o.subjName + '」的試卷。\n' +
+      '請根據這份試卷涵蓋的單元與學習重點，出 ' + o.n + ' 題四選一的選擇題，讓學生在網站上練習。\n\n' +
+      '要求：\n' +
+      '1. 使用繁體中文與臺灣國小課本的用語，難度：' + o.level + '。\n' +
+      '2. 可以改寫試卷中的題目（包含是非、填空、配合、閱讀題，都改成四選一），也可以在同一單元範圍內延伸出新題，但不要超出這份試卷的單元範圍。\n' +
+      '3. 學生看不到原試卷的圖片或表格，需要看圖的題目請把必要資訊寫進題目文字裡；做不到就不要出。\n' +
+      '4. 每題剛好 4 個選項，只有一個正確答案，選項不要加 A/B/C/D 或 ①② 編號。正確答案的位置要平均分散。\n' +
+      '5. explanation 用一到兩句話說明為什麼這個答案正確，語氣適合國小學生。\n' +
+      '6. 內容必須正確，不確定的知識不要出題。\n' +
+      (o.extra ? '7. 老師的補充要求：' + o.extra + '\n' : '') +
+      '\n請剛好輸出 ' + o.n + ' 題。';
+  }
+
+  function callClaude(key, pdfB64, prompt, onProgress) {
+    var body = {
+      model: MODEL,
+      max_tokens: 32000,
+      stream: true,
+      output_config: { effort: 'medium', format: { type: 'json_schema', schema: SCHEMA } },
+      fallbacks: 'default',
+      system: '你是一位經驗豐富的臺灣國小老師，擅長依照課綱與試卷出題。',
+      messages: [{ role: 'user', content: [
+        { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: pdfB64 } },
+        { type: 'text', text: prompt }
+      ] }]
+    };
+    return fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2026-10-21',
+        'anthropic-beta': 'server-side-fallback-2026-07-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify(body)
+    }).then(function (res) {
+      if (!res.ok) {
+        return res.text().then(function (t) {
+          var msg = ''; try { msg = JSON.parse(t).error.message; } catch (e) { msg = t.slice(0, 200); }
+          var why = res.status === 401 ? '金鑰不正確或已失效' : res.status === 429 ? '請求太頻繁或額度不足，請稍後再試' : res.status === 400 && /credit/i.test(msg) ? 'Anthropic 帳戶餘額不足，請先儲值' : res.status === 413 ? 'PDF 檔案太大' : '';
+          throw new Error((why ? why + '。' : '') + '（' + res.status + ' ' + msg + '）');
+        });
+      }
+      var reader = res.body.getReader(), dec = new TextDecoder(), buf = '', text = '', stop = null, chars = 0;
+      function handle(evt) {
+        if (evt.type === 'content_block_delta' && evt.delta && evt.delta.type === 'text_delta') { text += evt.delta.text; chars += evt.delta.text.length; onProgress(chars); }
+        else if (evt.type === 'message_delta' && evt.delta && evt.delta.stop_reason) stop = evt.delta.stop_reason;
+        else if (evt.type === 'error') throw new Error((evt.error && evt.error.message) || 'AI 服務發生錯誤');
+      }
+      function pump() {
+        return reader.read().then(function (r) {
+          if (r.done) return { text: text, stop: stop };
+          buf += dec.decode(r.value, { stream: true });
+          var lines = buf.split('\n'); buf = lines.pop();
+          lines.forEach(function (line) {
+            if (line.indexOf('data:') !== 0) return;
+            var data = line.slice(5).trim(); if (!data) return;
+            var evt; try { evt = JSON.parse(data); } catch (e) { return; }
+            handle(evt);
+          });
+          return pump();
+        });
+      }
+      return pump();
+    });
+  }
+
+  function clean(list) {
+    var out = [];
+    (list || []).forEach(function (q) {
+      if (!q || typeof q.question !== 'string' || !Array.isArray(q.options)) return;
+      var opts = q.options.map(function (o) { return String(o).replace(/^\s*(?:[A-DＡ-Ｄ][\.、．)]|[①②③④]|\([A-D]\))\s*/, '').trim(); });
+      var ans = q.answer_index;
+      if (opts.length !== 4 || opts.some(function (o) { return !o; }) || !(ans >= 0 && ans <= 3) || Math.floor(ans) !== ans) return;
+      out.push([q.question.trim(), opts, ans, String(q.explanation || '').trim()]);
+    });
+    return out;
+  }
+
+  function generate() {
+    if (busy) return;
+    var app = A(), key = apiKey();
+    if (!key) { setStatus('stStatus', '請先在第 1 步儲存 API 金鑰', true); return; }
+    var file = $('stPdf').files[0];
+    if (!file) { setStatus('stStatus', '請選擇一份 PDF 試卷', true); return; }
+    if (file.size > 30 * 1024 * 1024) { setStatus('stStatus', 'PDF 超過 30 MB，請先壓縮或拆成較小的檔案', true); return; }
+    var n = Math.max(5, Math.min(60, parseInt($('stN').value, 10) || 20));
+    var gradeKey = $('stGrade').value, subjKey = $('stSubj').value;
+    var g = app.GRADES.filter(function (x) { return x.key === gradeKey; })[0];
+    var s = app.SUBJECTS.filter(function (x) { return x.key === subjKey; })[0];
+    var title = $('stTitle').value.trim() || (file.name.replace(/\.pdf$/i, '') + '（AI 出題）');
+    busy = true; $('stGo').disabled = true;
+    setStatus('stStatus', '讀取 PDF 中…');
+    var started = Date.now();
+    readB64(file).then(function (b64) {
+      setStatus('stStatus', 'AI 正在閱讀試卷並出題，大約需要 1～3 分鐘…');
+      return callClaude(key, b64, buildPrompt({ gradeLabel: g.label, subjName: s.name, n: n, level: $('stLevel').value, extra: $('stExtra').value.trim() }), function (chars) {
+        setStatus('stStatus', 'AI 出題中…已寫出約 ' + chars + ' 字（' + Math.round((Date.now() - started) / 1000) + ' 秒）');
+      });
+    }).then(function (r) {
+      if (r.stop === 'refusal') throw new Error('AI 拒絕處理這份檔案，請換一份試卷試試');
+      var data; try { data = JSON.parse(r.text); } catch (e) { throw new Error(r.stop === 'max_tokens' ? '題目太多，回覆被截斷了，請減少題數再試' : 'AI 回傳的格式無法讀取，請再試一次'); }
+      var qs = clean(data.questions);
+      if (!qs.length) throw new Error('沒有產生可用的題目，請確認 PDF 內容清楚可讀');
+      draft = { grade: gradeKey, subj: subjKey, title: title, source: file.name, qs: qs };
+      setStatus('stStatus', '完成！產生 ' + qs.length + ' 題，請在下方檢查。');
+      renderDraft();
+      $('stDraftPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }).catch(function (e) {
+      var msg = e && e.message ? e.message : String(e);
+      if (/Failed to fetch|NetworkError|Load failed/i.test(msg)) msg = '連不上 AI 服務，請檢查網路（學校網路可能封鎖 api.anthropic.com）';
+      setStatus('stStatus', '出題失敗：' + msg, true);
+    }).then(function () { busy = false; var b = $('stGo'); if (b) b.disabled = false; });
+  }
+
+  /* ---------- 草稿 ---------- */
+  function renderDraft() {
+    var panel = $('stDraftPanel'); if (!panel) return;
+    panel.hidden = !draft;
+    if (!draft) return;
+    $('stDraft').innerHTML = draft.qs.map(function (q, i) {
+      return '<li><div class="dq"><p class="dq-q">' + esc(q[0]) + '</p><ol class="dq-opts">' + q[1].map(function (o, k) {
+        return '<li' + (k === q[2] ? ' class="ok"' : '') + '>' + esc(o) + (k === q[2] ? '　✓' : '') + '</li>';
+      }).join('') + '</ol><p class="hint">' + esc(q[3]) + '</p></div><button class="btn small" type="button" data-del="' + i + '">刪除</button></li>';
+    }).join('');
+    $('stDraft').querySelectorAll('[data-del]').forEach(function (b) {
+      b.onclick = function () { draft.qs.splice(+b.dataset.del, 1); if (!draft.qs.length) draft = null; renderDraft(); };
+    });
+    $('stAdd').textContent = '加入題庫（' + draft.qs.length + ' 題）';
+  }
+  function addDraft() {
+    if (!draft) return;
+    var app = A();
+    app.addSet({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), grade: draft.grade, subj: draft.subj, title: draft.title, source: draft.source, created: Date.now(), qs: draft.qs });
+    var s = app.SUBJECTS.filter(function (x) { return x.key === draft.subj; })[0];
+    app.toast('已加入' + s.island + '，記得按「發布到網站」讓學生看到');
+    draft = null; renderDraft(); renderSets();
+  }
+
+  /* ---------- 題庫清單 ---------- */
+  function renderSets() {
+    var app = A(), box = $('stSets'); if (!box) return;
+    var local = {}; app.localSets().forEach(function (s) { local[s.id] = 1; });
+    var sets = app.allSets();
+    if (!sets.length) { box.innerHTML = '<p class="hint">還沒有 AI 題庫。上傳一份試卷開始吧！</p>'; return; }
+    box.innerHTML = '<div class="table-wrap"><table class="log"><thead><tr><th>年級</th><th>科目</th><th>關卡名稱</th><th class="num">題數</th><th>狀態</th><th></th></tr></thead><tbody>' +
+      sets.map(function (s) {
+        var g = app.GRADES.filter(function (x) { return x.key === s.grade; })[0], sj = app.SUBJECTS.filter(function (x) { return x.key === s.subj; })[0];
+        return '<tr><td>' + (g ? g.short : '') + '</td><td><span class="tag" style="--c:' + (sj ? sj.color : 'var(--sea)') + '">' + (sj ? sj.name : '') + '</span></td><td>' + esc(s.title) + '</td><td class="num">' + s.qs.length + '</td><td>' + (local[s.id] ? '<span class="pill warn">尚未發布</span>' : '<span class="pill">已在網站</span>') + '</td><td><button class="btn small" type="button" data-rm="' + esc(s.id) + '">刪除</button></td></tr>';
+      }).join('') + '</tbody></table></div>';
+    box.querySelectorAll('[data-rm]').forEach(function (b) {
+      b.onclick = function () {
+        if (b.dataset.confirm !== '1') { b.dataset.confirm = '1'; b.textContent = '確定刪除？'; return; }
+        app.deleteSet(b.dataset.rm); renderSets(); app.toast('已刪除，按「發布到網站」才會從網站上移除');
+      };
+    });
+  }
+
+  function exportSets() {
+    var data = JSON.stringify({ version: 1, updated: Date.now(), sets: A().allSets() }, null, 1);
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+    a.download = 'custom-questions.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    A().toast('已下載 custom-questions.json');
+  }
+  function importSets(e) {
+    var f = e.target.files[0]; if (!f) return;
+    f.text().then(function (t) {
+      var d = JSON.parse(t); var n = A().importSets(d.sets || []);
+      renderSets(); A().toast('匯入 ' + n + ' 個題庫');
+    }).catch(function () { A().toast('這不是有效的題庫檔'); });
+    e.target.value = '';
+  }
+
+  /* ---------- 發布到 GitHub ---------- */
+  function b64utf8(str) { var bytes = new TextEncoder().encode(str), bin = ''; for (var i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(bin); }
+  function publish() {
+    var app = A(), saved = ghDefaults();
+    var owner = $('ghOwner').value.trim(), repo = $('ghRepo').value.trim(), branch = $('ghBranch').value.trim() || 'main';
+    var tokenIn = $('ghToken').value.trim();
+    var token = tokenIn && tokenIn.indexOf('•') !== 0 ? tokenIn : saved.token;
+    if (!owner || !repo || !token) { setStatus('ghStatus', '請填寫 GitHub 帳號、Repo 名稱和權杖', true); return; }
+    lsSet(GH_STORE, JSON.stringify({ owner: owner, repo: repo, branch: branch, token: token }));
+    $('ghToken').value = '••••••••（已設定）';
+    var sets = app.allSets();
+    var url = 'https://api.github.com/repos/' + encodeURIComponent(owner) + '/' + encodeURIComponent(repo) + '/contents/custom-questions.json';
+    var headers = { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' };
+    $('ghPublish').disabled = true; setStatus('ghStatus', '發布中…');
+    fetch(url + '?ref=' + encodeURIComponent(branch), { headers: headers, cache: 'no-store' })
+      .then(function (r) { if (r.status === 404) return null; if (!r.ok) throw r; return r.json(); })
+      .then(function (cur) {
+        var body = { message: '更新 AI 題庫（' + sets.length + ' 個關卡）', branch: branch, content: b64utf8(JSON.stringify({ version: 1, updated: Date.now(), sets: sets }, null, 1)) };
+        if (cur && cur.sha) body.sha = cur.sha;
+        return fetch(url, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, headers), body: JSON.stringify(body) });
+      })
+      .then(function (r) { if (!r.ok) throw r; return r.json(); })
+      .then(function () {
+        app.setRemote(sets); app.markPublished(); renderSets();
+        setStatus('ghStatus', '已發布！大約 1 分鐘後，學生重新整理網頁就會看到新題目。');
+      })
+      .catch(function (r) {
+        var st = r && r.status;
+        setStatus('ghStatus', '發布失敗：' + (st === 401 ? '權杖不正確或已過期' : st === 403 ? '權杖沒有寫入權限（Contents 要選 Read and write）' : st === 404 ? '找不到這個 repo，請檢查帳號與名稱，以及權杖是否有權限存取它' : st === 409 || st === 422 ? '分支名稱不對或檔案剛被修改，請再按一次' : '請檢查網路後再試') , true);
+      })
+      .then(function () { var b = $('ghPublish'); if (b) b.disabled = false; });
+  }
+
+  window.IslandStudio = { render: render };
+})();
+
+</script>
 <!-- ===== 主程式 ===== -->
 <script>
 /* 數位學習島 主程式（純前端，不需要伺服器） */
@@ -691,7 +1425,23 @@ window.QB['g5a-social'] = {
   }
   var QB = window.QB || {};
 
-  function bank(gradeKey, subjKey) { return QB[gradeKey + '-' + subjKey] || null; }
+  /* 自訂（AI 出題）題庫：本機 + 網站上的 custom-questions.json */
+  var CUSTOM_KEY = 'islands.custom';
+  var custom = (function () { try { var v = JSON.parse(localStorage.getItem(CUSTOM_KEY)); if (v && v.sets) return v; } catch (e) {} return { sets: [], deleted: [] }; })();
+  if (!custom.deleted) custom.deleted = [];
+  var remoteSets = [];
+  function allSets() {
+    var map = {};
+    remoteSets.concat(custom.sets).forEach(function (s) { if (s && s.id && custom.deleted.indexOf(s.id) < 0) map[s.id] = s; });
+    return Object.keys(map).map(function (k) { return map[k]; }).sort(function (a, b) { return (a.created || 0) - (b.created || 0); });
+  }
+  function bank(gradeKey, subjKey) {
+    var base = QB[gradeKey + '-' + subjKey] || null;
+    var extra = allSets().filter(function (s) { return s.grade === gradeKey && s.subj === subjKey && s.qs && s.qs.length; })
+      .map(function (s) { return { id: 'C-' + s.id, title: s.title, ai: true, qs: s.qs }; });
+    if (!base && !extra.length) return null;
+    return { publisher: base ? base.publisher : '自訂題庫', units: (base ? base.units : []).concat(extra) };
+  }
   function gradeReady(gradeKey) { return SUBJECTS.some(function (s) { return bank(gradeKey, s.key); }); }
   function gradeInfo(key) { return GRADES.find(function (x) { return x.key === key; }); }
   function subjInfo(key) { return SUBJECTS.find(function (x) { return x.key === key; }); }
@@ -807,7 +1557,7 @@ window.QB['g5a-social'] = {
   /* ---------- 小工具 ---------- */
   var toastTimer;
   function toast(msg) { var t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2600); }
-  function show(id) { ['home', 'subject', 'quiz', 'result', 'history'].forEach(function (v) { $('view-' + v).hidden = v !== id; }); window.scrollTo(0, 0); }
+  function show(id) { ['home', 'subject', 'quiz', 'result', 'history', 'studio'].forEach(function (v) { $('view-' + v).hidden = v !== id; }); window.scrollTo(0, 0); }
   function starCount(gradeKey, subjKey, unitId) {
     var qs = questionsOf(gradeKey, subjKey, unitId); var n = 0;
     qs.forEach(function (q) { if (profile.stars[q.id]) n++; });
@@ -824,7 +1574,25 @@ window.QB['g5a-social'] = {
     }
     var gi = gradeInfo(profile.grade);
     $('gradeChip').textContent = gi ? gi.label : '選擇年級';
+    applyZhuyin();
   }
+
+  /* ---------- 注音模式 ---------- */
+  // 一、二年級預設開啟；按過開關之後，依照使用者的選擇
+  function zyPref() { try { return localStorage.getItem('islands.zhuyin'); } catch (e) { return null; } }
+  function zyWanted() { var p = zyPref(); if (p === 'on') return true; if (p === 'off') return false; return /^g[12]/.test(profile.grade || ''); }
+  function applyZhuyin() {
+    if (!window.Zhuyin) return;
+    var want = zyWanted();
+    if (want !== window.Zhuyin.isOn()) window.Zhuyin.set(want);
+    var c = $('zyChip'); c.setAttribute('aria-pressed', want ? 'true' : 'false'); c.textContent = want ? '注音：開' : '注音：關';
+  }
+  $('zyChip').onclick = function () {
+    try { localStorage.setItem('islands.zhuyin', zyWanted() ? 'off' : 'on'); } catch (e) {}
+    applyZhuyin();
+    toast(zyWanted() ? '已開啟注音' : '已關閉注音');
+  };
+  function noZy(el, text) { if (el) el.classList.toggle('no-zy', !!(window.Zhuyin && window.Zhuyin.revealsAnswer(text))); }
 
   /* ---------- 年級選擇 ---------- */
   function openGrade() {
@@ -899,48 +1667,96 @@ window.QB['g5a-social'] = {
       return '<g transform="translate(' + x + ' ' + y + ')"><path d="M-30 -6 Q-15 -14 0 -6 Q15 -14 30 -6 L30 16 Q15 8 0 16 Q-15 8 -30 16Z" fill="#fff" stroke="' + color + '" stroke-width="2.5"/><path d="M0 -6V16" stroke="' + color + '" stroke-width="2"/><path d="M-22 0h14M-22 6h14M8 0h14M8 6h14" stroke="' + color + '" stroke-width="1.6" opacity=".6"/><path d="M20 -34 L8 -10" stroke="#5b3a1e" stroke-width="4" stroke-linecap="round"/><path d="M8 -10 l-3 7 6 -3z" fill="#222"/></g>';
     if (key === 'science') // 大樹與小芽
       return '<g transform="translate(' + x + ' ' + y + ')"><rect x="-4" y="-6" width="8" height="24" rx="2" fill="#7a5130"/><circle cx="0" cy="-20" r="20" fill="' + color + '"/><circle cx="-14" cy="-10" r="12" fill="' + color + '"/><circle cx="14" cy="-10" r="12" fill="' + color + '"/><circle cx="-5" cy="-26" r="6" fill="#fff" opacity=".25"/><path d="M22 18c0-8 6-10 10-10-1 6-5 9-10 10z" fill="' + color + '"/></g>';
-    return '<g transform="translate(' + x + ' ' + y + ')"><path d="M-26 0 L-8 -16 L10 0Z" fill="' + color + '"/><rect x="-22" y="0" width="28" height="18" fill="#fff" stroke="' + color + '" stroke-width="2"/><rect x="-11" y="6" width="7" height="12" fill="' + color + '"/><path d="M22 18V-30" stroke="#5b3a1e" stroke-width="3"/><path d="M22 -30 L40 -24 L22 -18Z" fill="' + color + '"/></g>';
+    return '<g transform="translate(' + x + ' ' + y + ')"><path d="M-26 0 L-8 -16 L10 0Z" fill="' + color + '"/><rect x="-22" y="0" width="28" height="18" fill="#fff" stroke="' + color + '" stroke-width="2"/><rect x="-11" y="6" width="7" height="12" fill="' + color + '"/><path d="M22 18V-30" stroke="#5b3a1e" stroke-width="3"/><path class="flag" d="M22 -30 L40 -24 L22 -18Z" fill="' + color + '"/><circle cx="22" cy="-31" r="2.5" fill="#ffd43b"/></g>';
+  }
+  var ISLE_STYLE = {
+    chinese: { grass: ['#ffb7a8', '#ff7f6e'], label: '#e8553f' },
+    science: { grass: ['#a6e58b', '#4fb860'], label: '#2f9a4c' },
+    social:  { grass: ['#ffe08a', '#f2b632'], label: '#d48a00' }
+  };
+  function reduceMotion() { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+  function decor(key, x, y) {
+    var anim = !reduceMotion();
+    if (key === 'chinese') // 從書本飄起的字
+      return ['字', '詩', '文'].map(function (ch, i) {
+        return '<text class="floaty" style="animation-delay:' + (i * 1.3) + 's" x="' + (x - 22 + i * 22) + '" y="' + (y - 18) + '" text-anchor="middle" font-size="16" font-weight="700" fill="#fff" stroke="#e8553f" stroke-width=".8">' + ch + '</text>';
+      }).join('');
+    if (key === 'science') // 繞著樹飛的蝴蝶
+      return '<g class="butterfly"><g class="flap"><ellipse cx="-5" cy="0" rx="6" ry="4.5" fill="#ff8ad8"/><ellipse cx="5" cy="0" rx="6" ry="4.5" fill="#ffd25e"/></g><rect x="-1" y="-4" width="2" height="8" rx="1" fill="#5b3a1e"/>' +
+        (anim ? '<animateMotion dur="7s" repeatCount="indefinite" path="M' + (x + 30) + ' ' + (y - 30) + ' c 20 -20 -10 -45 -35 -30 s -40 25 -20 40 s 45 10 55 -10z"/>' : '') + '</g>';
+    return ''; // 社會島的旗子在 icon 內會飄動
   }
   function renderMap() {
-    var gk = profile.grade || 'g5a';
-    var svg = '<defs><radialGradient id="seaG" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#5fb3cf"/><stop offset="1" stop-color="#2b7896"/></radialGradient></defs>' +
-      '<rect width="600" height="470" fill="url(#seaG)"/>';
-    for (var r = 0; r < 8; r++) {
-      var y = 30 + r * 62;
-      svg += '<path class="wave' + (r % 2 ? ' w2' : '') + '" d="M-40 ' + y + ' q 25 -9 50 0 t 50 0 t 50 0 t 50 0 t 50 0 t 50 0 t 50 0 t 50 0 t 50 0 t 50 0 t 50 0 t 50 0 t 50 0 t 50 0" stroke="#ffffff" stroke-opacity=".18" stroke-width="2" fill="none"/>';
+    var gk = profile.grade || 'g5a', anim = !reduceMotion();
+    var svg = '<defs>' +
+      '<linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc8f2"/><stop offset="1" stop-color="#c8efff"/></linearGradient>' +
+      '<linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#45c1df"/><stop offset=".55" stop-color="#2a9ccc"/><stop offset="1" stop-color="#1c72a8"/></linearGradient>' +
+      '<radialGradient id="sunG"><stop offset="0" stop-color="#fff7b8"/><stop offset=".55" stop-color="#ffe066" stop-opacity=".55"/><stop offset="1" stop-color="#ffe066" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="shoalG"><stop offset=".6" stop-color="#b9f6ef"/><stop offset="1" stop-color="#7fe0e6" stop-opacity="0"/></radialGradient>';
+    SUBJECTS.forEach(function (s) { var st = ISLE_STYLE[s.key]; svg += '<linearGradient id="grass-' + s.key + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + st.grass[0] + '"/><stop offset="1" stop-color="' + st.grass[1] + '"/></linearGradient>'; });
+    svg += '</defs>' +
+      '<rect width="600" height="470" fill="url(#seaG)"/>' +
+      '<rect width="600" height="92" fill="url(#skyG)"/>' +
+      '<g class="sun"><circle cx="530" cy="46" r="46" fill="url(#sunG)"/><circle cx="530" cy="46" r="19" fill="#ffd43b"/></g>';
+    // 雲
+    [[60, 34, 1, 0], [300, 22, .8, -18], [460, 60, .65, -35]].forEach(function (c, i) {
+      svg += '<g class="cloud c' + i + '" style="animation-delay:' + c[3] + 's"><g transform="translate(' + c[0] + ' ' + c[1] + ') scale(' + c[2] + ')"><ellipse cx="0" cy="0" rx="34" ry="13" fill="#fff"/><ellipse cx="-14" cy="-8" rx="16" ry="12" fill="#fff"/><ellipse cx="10" cy="-12" rx="18" ry="14" fill="#fff"/></g></g>';
+    });
+    // 海平線與浪
+    svg += '<path d="M0 88 q 30 -8 60 0 t 60 0 t 60 0 t 60 0 t 60 0 t 60 0 t 60 0 t 60 0 t 60 0 t 60 0 V100 H0Z" fill="#45c1df"/>';
+    for (var r = 0; r < 7; r++) {
+      var y = 125 + r * 52;
+      svg += '<path class="wave' + (r % 2 ? ' w2' : '') + '" d="M-60 ' + y + ' q 20 -7 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0" stroke="#fff" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"/>';
     }
-    // 航線虛線
-    svg += '<path d="M150 150 Q300 70 445 135 Q430 250 300 305 Q160 280 150 150" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2.5" stroke-dasharray="2 9" stroke-linecap="round"/>';
-    SUBJECTS.forEach(function (s) {
-      var p = ISLES[s.key], has = !!bank(gk, s.key), st = starCount(gk, s.key);
-      var colorVar = s.color.replace('var(', '').replace(')', '');
-      var color = getComputedStyle(document.documentElement).getPropertyValue(colorVar).trim() || '#888';
+    // 閃光
+    [[95, 300], [520, 250], [470, 420], [70, 430], [230, 205], [560, 160], [380, 225], [200, 420]].forEach(function (p, i) {
+      svg += '<path class="twinkle" style="animation-delay:' + (i * .55) + 's" d="M' + p[0] + ' ' + (p[1] - 6) + ' l2 4 4 2 -4 2 -2 4 -2 -4 -4 -2 4 -2z" fill="#fff"/>';
+    });
+    // 航線
+    var route = 'M150 150 Q300 70 445 135 Q430 250 300 305 Q160 280 150 150';
+    svg += '<path class="route" d="' + route + '" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/>';
+    // 島嶼
+    SUBJECTS.forEach(function (s, idx) {
+      var p = ISLES[s.key], has = !!bank(gk, s.key), st = starCount(gk, s.key), sty = ISLE_STYLE[s.key];
       svg += '<g class="isle' + (has ? '' : ' locked') + '" data-subj="' + s.key + '" tabindex="' + (has ? 0 : -1) + '" role="button" aria-label="' + s.island + (has ? '，' + st.got + ' 顆星' : '，建造中') + '">' +
-        '<path d="' + blob(p.x, p.y + 6, 78, p.seed) + '" fill="#bfe6ee" opacity=".55"/>' +
-        '<path d="' + blob(p.x, p.y, 64, p.seed) + '" fill="#f2dfb4"/>' +
-        '<path d="' + blob(p.x, p.y - 4, 50, p.seed + 2, 8) + '" fill="#9ccf86"/>' +
-        icon(s.key, p.x, p.y - 2, color) +
-        '<g transform="translate(' + p.x + ' ' + (p.y + 62) + ')"><rect x="-56" y="-16" width="112" height="32" rx="16" fill="#fff"/><text class="isle-label" x="0" y="7" text-anchor="middle" fill="' + color + '">' + s.island + '</text></g>' +
-        (has ? '<text x="' + p.x + '" y="' + (p.y + 98) + '" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">★ ' + st.got + ' / ' + st.max + '</text>' : '<text x="' + p.x + '" y="' + (p.y + 98) + '" text-anchor="middle" fill="#fff" font-size="14">建造中</text>') +
+        '<ellipse class="ripple" style="animation-delay:' + (idx * .9) + 's" cx="' + p.x + '" cy="' + (p.y + 8) + '" rx="100" ry="66" fill="url(#shoalG)"/>' +
+        '<g class="bobber" style="animation-delay:' + (idx * .7) + 's">' +
+        '<path d="' + blob(p.x, p.y + 4, 66, p.seed) + '" fill="#f6d58e"/>' +
+        '<path d="' + blob(p.x, p.y, 64, p.seed) + '" fill="#ffe9b0"/>' +
+        '<path d="' + blob(p.x, p.y - 5, 50, p.seed + 2, 8) + '" fill="url(#grass-' + s.key + ')"/>' +
+        '<circle cx="' + (p.x - 38) + '" cy="' + (p.y + 18) + '" r="5" fill="#fff" opacity=".5"/><circle cx="' + (p.x + 42) + '" cy="' + (p.y + 10) + '" r="3.5" fill="#fff" opacity=".5"/>' +
+        icon(s.key, p.x, p.y - 4, s.key === 'science' ? '#1f7a3c' : sty.label) + decor(s.key, p.x, p.y - 4) +
+        '</g>' +
+        '<g transform="translate(' + p.x + ' ' + (p.y + 64) + ')"><rect x="-66" y="-17" width="132" height="34" rx="17" fill="' + sty.label + '" stroke="#fff" stroke-width="3"/><text class="isle-label" x="0" y="8" text-anchor="middle" fill="#fff">' + s.island + '</text></g>' +
+        '<g transform="translate(' + p.x + ' ' + (p.y + 98) + ')"><rect x="-44" y="-13" width="88" height="24" rx="12" fill="#ffffff" fill-opacity=".9"/><text x="0" y="5" text-anchor="middle" fill="' + sty.label + '" font-size="14" font-weight="700">' + (has ? '★ ' + st.got + ' / ' + st.max : '建造中') + '</text></g>' +
         '</g>';
     });
-    // 小船
-    svg += '<g id="boat" style="transform:translate(300px,215px)"><g class="bob"><path d="M-18 0 H18 L12 10 H-12Z" fill="#8a4b2a"/><path d="M0 0 V-30" stroke="#5b3a1e" stroke-width="2.5"/><path d="M1 -29 L20 -6 H1Z" fill="#fff"/><path d="M-1 -24 L-14 -6 H-1Z" fill="#f2dfb4"/></g></g>';
+    // 會跳的魚
+    svg += '<g class="fish"><g transform="translate(470 330)"><g class="fish-jump"><path d="M0 0 q10 -8 20 0 q-10 8 -20 0z" fill="#ff8f3f"/><path d="M0 0 l-7 -5 v10z" fill="#ff8f3f"/><circle cx="14" cy="-1" r="1.4" fill="#222"/></g></g></g>';
+    svg += '<g class="fish f2"><g transform="translate(90 370) scale(-1 1)"><g class="fish-jump"><path d="M0 0 q10 -8 20 0 q-10 8 -20 0z" fill="#ffd23f"/><path d="M0 0 l-7 -5 v10z" fill="#ffd23f"/><circle cx="14" cy="-1" r="1.4" fill="#222"/></g></g></g>';
+    // 海鷗
+    [[0, 0, 14], [1, -6, 19]].forEach(function (g) {
+      svg += '<g class="gull">' + '<path class="wing" d="M-9 0 q4.5 -6 9 0 q4.5 -6 9 0" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
+        (anim ? '<animateMotion dur="' + g[2] + 's" begin="' + g[1] + 's" repeatCount="indefinite" path="M-30 ' + (60 + g[0] * 30) + ' C 150 ' + (20 + g[0] * 20) + ' 380 ' + (120 - g[0] * 30) + ' 640 ' + (50 + g[0] * 20) + '"/>' : '') +
+        '</g>';
+    });
+    // 小船沿著航線航行
+    svg += '<g id="boat"' + (anim ? '' : ' transform="translate(300 215)"') + '><g class="bob"><path d="M-24 6 q24 8 48 0" stroke="#fff" stroke-opacity=".7" stroke-width="2" fill="none"/><path d="M-18 0 H18 L12 10 H-12Z" fill="#e8553f"/><path d="M-18 0 H18 L16.5 3 H-16.5Z" fill="#fff" opacity=".6"/><path d="M0 0 V-32" stroke="#5b3a1e" stroke-width="2.5"/><path d="M1 -31 L21 -6 H1Z" fill="#fff"/><path d="M-1 -26 L-15 -6 H-1Z" fill="#ffd43b"/><path d="M0 -32 l9 3 -9 3z" fill="#2f9a4c"/></g>' +
+      (anim ? '<animateMotion dur="28s" repeatCount="indefinite" path="M300 215 C 360 180 420 190 470 230 S 470 330 380 360 S 200 380 160 300 S 200 180 300 215"/>' : '') + '</g>';
     var map = $('map'); map.innerHTML = svg;
     map.querySelectorAll('.isle').forEach(function (el) {
       var key = el.getAttribute('data-subj');
       if (el.classList.contains('locked')) return;
-      function go() { sail(key); }
+      function go() { sail(key, el); }
       el.addEventListener('click', go);
       el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
     });
   }
-  function sail(key) {
-    var p = ISLES[key], boat = $('boat');
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (boat && !reduce) {
-      boat.style.transform = 'translate(' + p.x + 'px,' + (p.y + 36) + 'px)';
-      setTimeout(function () { location.hash = '#isle-' + key; }, 650);
+  function sail(key, el) {
+    el = el || document.querySelector('.isle[data-subj="' + key + '"]');
+    if (el && !reduceMotion()) {
+      el.classList.add('picked');
+      setTimeout(function () { location.hash = '#isle-' + key; }, 420);
     } else location.hash = '#isle-' + key;
   }
 
@@ -963,7 +1779,7 @@ window.QB['g5a-social'] = {
     SUBJECTS.forEach(function (s) {
       var b = bank(gk, s.key); var c = starCount(gk, s.key);
       var li = document.createElement('li');
-      li.innerHTML = '<button type="button" class="isle-row" style="--c:' + s.color + '"' + (b ? '' : ' disabled') + '><span class="dot"></span><span><span class="nm">' + s.island + '</span><span class="pub">' + (b ? b.publisher : '建造中') + '</span><div class="bar"><span style="width:' + (c.max ? Math.round(c.got / c.max * 100) : 0) + '%"></span></div></span><span class="cnt">★ ' + c.got + ' / ' + c.max + '</span></button>';
+      li.innerHTML = '<button type="button" class="isle-row" style="--c:' + s.color + '"' + (b ? '' : ' disabled') + '><span class="dot">' + s.name.charAt(0) + '</span><span><span class="nm">' + s.island + '</span><span class="pub">' + (b ? b.publisher : '建造中') + '</span><div class="bar"><span style="width:' + (c.max ? Math.round(c.got / c.max * 100) : 0) + '%"></span></div></span><span class="cnt">★ ' + c.got + ' / ' + c.max + '</span></button>';
       if (b) li.firstChild.onclick = function () { sail(s.key); };
       list.appendChild(li);
     });
@@ -990,9 +1806,10 @@ window.QB['g5a-social'] = {
     var ol = $('unitList'); ol.innerHTML = '';
     b.units.forEach(function (u, i) {
       var uc = starCount(gk, key, u.id);
-      var parts = u.title.split(/\s+/);
+      var parts = u.ai ? ['AI 出題', u.title] : u.title.split(/\s+/);
       var li = document.createElement('li');
       li.className = 'unit' + (uc.got === uc.max ? ' done' : '');
+      li.style.animationDelay = (i * 0.05) + 's';
       li.innerHTML = '<span class="unit-no">' + esc(parts[0]) + '</span><h3>' + esc(parts.slice(1).join(' ') || u.title) + '</h3>' +
         '<div class="unit-foot"><span class="unit-stars"><b>★</b> ' + uc.got + ' / ' + uc.max + '</span><button class="btn primary" type="button">' + (uc.got ? '再練習' : '開始') + '</button></div>';
       li.querySelector('button').onclick = function () { startQuiz({ label: s.island + '・' + u.title, subj: key, qs: shuffle(questionsOf(gk, key, u.id)).slice(0, 10), replay: { type: 'unit', subj: key, unit: u.id } }); };
@@ -1030,6 +1847,8 @@ window.QB['g5a-social'] = {
       box.appendChild(b);
     });
     $('qExplain').hidden = true; $('qNext').hidden = true;
+    var all = q.q + q.opts.join('');
+    noZy($('qText'), all); noZy($('qOpts'), all); noZy($('qExplain'), all);
   }
   function answer(orig) {
     var q = quiz.qs[quiz.i], ok = orig === q.ans;
@@ -1046,6 +1865,7 @@ window.QB['g5a-social'] = {
       profile.wrong[q.id] = (profile.wrong[q.id] || 0) + 1;
     }
     quiz.results.push({ q: q, pick: orig, ok: ok });
+    fx(ok, $('qOpts').querySelector('.opt.' + (ok ? 'right' : 'wrong')));
     save();
     var ex = $('qExplain');
     ex.innerHTML = (ok ? '<b class="ok">答對了！</b> ' : '<b class="no">再想想：</b>正確答案是「' + esc(q.opts[q.ans]) + '」。') + esc(q.ex || '');
@@ -1054,6 +1874,46 @@ window.QB['g5a-social'] = {
     nx.textContent = quiz.i === quiz.qs.length - 1 ? '看成績' : '下一題';
     nx.focus();
   }
+  /* ---------- 動畫效果 ---------- */
+  var FX_COLORS = ['#ff6f61', '#ffd43b', '#4fb860', '#45c1df', '#b07cff', '#ff8ad8'];
+  function confetti(x, y, n, spread) {
+    if (reduceMotion()) return;
+    var cv = document.createElement('canvas'), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.className = 'confetti'; cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
+    document.body.appendChild(cv);
+    var ctx = cv.getContext('2d'); ctx.scale(dpr, dpr);
+    var ps = [];
+    for (var i = 0; i < n; i++) {
+      var a = -Math.PI / 2 + (Math.random() - .5) * spread, v = 5 + Math.random() * 7;
+      ps.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: Math.random() * 6.28, vr: (Math.random() - .5) * .4, w: 6 + Math.random() * 5, h: 4 + Math.random() * 4, c: FX_COLORS[i % FX_COLORS.length] });
+    }
+    var t0 = performance.now();
+    (function frame(t) {
+      var k = (t - t0) / 1600;
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      ps.forEach(function (p) {
+        p.vy += .28; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+        ctx.save(); ctx.globalAlpha = Math.max(0, 1 - k * k); ctx.translate(p.x, p.y); ctx.rotate(p.r);
+        ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
+      });
+      if (k < 1) requestAnimationFrame(frame); else cv.remove();
+    })(t0);
+  }
+  function fx(ok, el) {
+    if (!el) return;
+    if (!ok) { el.classList.add('shake'); return; }
+    var r = el.getBoundingClientRect();
+    confetti(r.left + r.width * .2, r.top + r.height / 2, 28, 1.6);
+    var star = document.createElement('span'); star.className = 'plus-star'; star.textContent = '+1 ★';
+    star.style.left = (r.right - 70) + 'px'; star.style.top = (r.top + window.scrollY - 6) + 'px';
+    document.body.appendChild(star); setTimeout(function () { star.remove(); }, 1200);
+  }
+  function countUp(el, to) {
+    if (reduceMotion() || to <= 0) { el.textContent = to; return; }
+    var t0 = performance.now(), d = 700;
+    (function f(t) { var k = Math.min(1, (t - t0) / d); el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); })(t0);
+  }
+
   $('qNext').onclick = function () { if (quiz.i < quiz.qs.length - 1) { quiz.i++; renderQ(); } else finishQuiz(); };
   $('quitQuiz').onclick = function () { quiz = null; route(); };
 
@@ -1066,13 +1926,16 @@ window.QB['g5a-social'] = {
     save();
     var v = $('view-result'); v.style.setProperty('--c', colorOf(quiz.subj === 'mix' ? 'social' : quiz.subj));
     $('resLabel').textContent = quiz.label;
-    $('resScore').textContent = score; $('resTotal').textContent = '/ ' + total;
+    countUp($('resScore'), score); $('resTotal').textContent = '/ ' + total;
     var pct = score / total;
+    var nStars = pct >= .9 ? 3 : pct >= .6 ? 2 : pct > 0 ? 1 : 0;
+    $('resBadge').innerHTML = [0, 1, 2].map(function (i) { return '<span class="big-star' + (i < nStars ? ' on' : '') + '" style="animation-delay:' + (.25 + i * .22) + 's">★</span>'; }).join('');
+    if (pct >= .6) setTimeout(function () { confetti(innerWidth / 2, innerHeight * .35, 90, 2.6); }, 350);
     $('resMsg').textContent = pct === 1 ? '全部答對，太厲害了！' : pct >= .8 ? '表現很棒，再把錯的弄懂就完美了。' : pct >= .6 ? '不錯喔！看看下面的解析再挑戰一次。' : '別灰心，先看解析，再練一次會更好。';
     $('resStars').textContent = quiz.newStars ? '這次新點亮 ' + quiz.newStars + ' 顆星 ★' : '這次沒有新的星星，換個關卡試試看。';
     var wrong = quiz.results.filter(function (r) { return !r.ok; });
     $('resReview').innerHTML = wrong.length ? '<h3>答錯的題目</h3>' + wrong.map(function (r) {
-      return '<div class="rv"><p>' + esc(r.q.q) + '</p><p class="yours">你的答案：' + esc(r.q.opts[r.pick]) + '</p><p class="ans">正確答案：' + esc(r.q.opts[r.q.ans]) + '</p><p class="hint">' + esc(r.q.ex) + '</p></div>';
+      return '<div class="rv' + (window.Zhuyin && window.Zhuyin.revealsAnswer(r.q.q + r.q.opts.join('')) ? ' no-zy' : '') + '"><p>' + esc(r.q.q) + '</p><p class="yours">你的答案：' + esc(r.q.opts[r.pick]) + '</p><p class="ans">正確答案：' + esc(r.q.opts[r.q.ans]) + '</p><p class="hint">' + esc(r.q.ex) + '</p></div>';
     }).join('') : '';
     var last = quiz;
     $('resAgain').onclick = function () { replay(last.replay, last.label, last.subj); };
@@ -1126,11 +1989,31 @@ window.QB['g5a-social'] = {
     var h = location.hash.replace('#', '');
     if (h.indexOf('isle-') === 0) renderSubject(h.slice(5));
     else if (h === 'history') renderHistory();
+    else if (h === 'studio' && window.IslandStudio) { window.IslandStudio.render(); show('studio'); }
     else { renderHome(); show('home'); }
   }
   window.addEventListener('hashchange', function () { quiz = null; route(); });
   $('gradeChip').onclick = openGrade;
   $('userChip').onclick = openUser;
+
+  window.IslandApp = {
+    GRADES: GRADES, SUBJECTS: SUBJECTS, toast: toast, route: route, esc: esc,
+    currentGrade: function () { return profile.grade || 'g5a'; },
+    allSets: allSets,
+    remoteSets: function () { return remoteSets; },
+    localSets: function () { return custom.sets; },
+    addSet: function (set) { custom.sets.push(set); saveCustom(); },
+    deleteSet: function (id) { custom.sets = custom.sets.filter(function (s) { return s.id !== id; }); if (custom.deleted.indexOf(id) < 0) custom.deleted.push(id); saveCustom(); },
+    importSets: function (sets) { var n = 0; sets.forEach(function (s) { if (s && s.id && s.qs) { custom.sets = custom.sets.filter(function (x) { return x.id !== s.id; }); custom.sets.push(s); custom.deleted = custom.deleted.filter(function (d) { return d !== s.id; }); n++; } }); saveCustom(); return n; },
+    markPublished: function () { custom.sets = []; custom.deleted = []; saveCustom(); },
+    setRemote: function (sets) { remoteSets = sets || []; }
+  };
+  function saveCustom() { try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(custom)); } catch (e) { toast('瀏覽器空間不足，題庫沒有存成功'); } }
+  // 讀取網站上已發布的 AI 題庫（GitHub Pages 上才有；直接開檔案時會略過）
+  if (location.protocol.indexOf('http') === 0) {
+    fetch('custom-questions.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d && d.sets) { remoteSets = d.sets; if (!quiz) route(); } }).catch(function () {});
+  }
 
   route();
   initFirebase();
