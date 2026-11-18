@@ -1,0 +1,2025 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>數位學習島</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="國小學習數位島：選年級、登島練習國語、自然、社會，記錄每一次的學習。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bpmf+Huninn&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+/* 版面概念：左邊是一張俯瞰的群島海圖，右邊是像碼頭公告板的航線清單；進島後是一條由上而下的關卡航道。 */
+:root {
+  --sea: #2f7f9e;
+  --sea-deep: #1d5a74;
+  --sea-soft: #d8eef3;
+  --foam: #f4fbfc;
+  --sand: #f2dfb4;
+  --ink: #18323d;
+  --muted: #5a7480;
+  --bg: #eaf5f7;
+  --card: #ffffff;
+  --line: #c9dee4;
+  --coral: #e2604d;   /* 國語 */
+  --leaf: #3f9b5c;    /* 自然 */
+  --amber: #d99a1e;   /* 社會 */
+  --star: #f1b31c;
+  --ok: #2e9a5a;
+  --bad: #d0453a;
+  --ok-bg: #e4f5ea;
+  --bad-bg: #fbe7e4;
+  --shadow: 0 6px 20px rgba(24, 60, 75, .10);
+  --font-display: "LXGW WenKai TC", "Kaiti TC", "DFKai-SB", "標楷體", serif;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --sea: #3d93b4; --sea-deep: #9fd6ea; --sea-soft: #173847; --foam: #d7eef5; --sand: #c9b384;
+    --ink: #e4f1f5; --muted: #9db6c0; --bg: #0f2129; --card: #162d37; --line: #28495a;
+    --coral: #f07a66; --leaf: #5dbb7a; --amber: #e8b240; --star: #f6c443;
+    --ok: #63c98c; --bad: #f07a6e; --ok-bg: #173c2a; --bad-bg: #432421;
+    --shadow: 0 6px 20px rgba(0, 0, 0, .35); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --sea: #3d93b4; --sea-deep: #9fd6ea; --sea-soft: #173847; --foam: #d7eef5; --sand: #c9b384;
+  --ink: #e4f1f5; --muted: #9db6c0; --bg: #0f2129; --card: #162d37; --line: #28495a;
+  --coral: #f07a66; --leaf: #5dbb7a; --amber: #e8b240; --star: #f6c443;
+  --ok: #63c98c; --bad: #f07a6e; --ok-bg: #173c2a; --bad-bg: #432421;
+  --shadow: 0 6px 20px rgba(0, 0, 0, .35); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+[hidden] { display: none !important; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+h1, h2 { font-family: var(--font-display); font-weight: 700; text-wrap: balance; margin: 0; }
+.eyebrow { margin: 0; font-size: 13px; letter-spacing: .12em; color: var(--muted); font-weight: 500; }
+.sub { color: var(--muted); margin: 6px 0 0; }
+
+/* 頂部 */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--card); border-bottom: 1px solid var(--line); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 21; background: var(--card); }
+.topbar-inner {
+  max-width: 1120px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+.brand svg { width: 36px; height: 36px; }
+.topnav { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  border: 1.5px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 14px;
+  font-size: 15px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+}
+.chip:hover { border-color: var(--sea); }
+.chip.user img { width: 22px; height: 22px; border-radius: 50%; }
+.chip.ghost { border-color: transparent; }
+
+main {
+  max-width: 1120px; margin: 0 auto;
+  padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* 首頁 */
+.home-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+.map-wrap { background: var(--sea); border-radius: 24px; overflow: hidden; position: relative; box-shadow: var(--shadow); }
+#map { display: block; width: 100%; height: auto; }
+.map-hint { position: absolute; left: 0; right: 0; bottom: 10px; margin: 0; text-align: center; color: #fff; font-size: 14px; opacity: .85; }
+.isle { cursor: pointer; transition: transform .25s ease; transform-box: fill-box; transform-origin: center; }
+.isle:hover, .isle:focus-visible { transform: translateY(-6px); outline: none; }
+.isle.locked { cursor: default; opacity: .55; }
+.isle.locked:hover { transform: none; }
+.isle-label { font-family: var(--font-display); font-weight: 700; font-size: 22px; }
+.wave { animation: drift 7s ease-in-out infinite alternate; }
+.wave.w2 { animation-duration: 9s; }
+@keyframes drift { from { transform: translateX(-14px); } to { transform: translateX(14px); } }
+#boat { transition: transform 1s cubic-bezier(.5, 0, .3, 1); }
+.bob { animation: bob 3s ease-in-out infinite; transform-box: fill-box; }
+@keyframes bob { 50% { transform: translateY(-4px); } }
+
+.dock { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.hello { font-size: 34px; line-height: 1.25; }
+.total-stars { display: flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; }
+.total-stars b { font-size: 28px; }
+.total-stars span:last-child { color: var(--muted); }
+.total-stars.small b { font-size: 20px; }
+.star-ico { color: var(--star); font-size: 22px; }
+.daily {
+  display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto; text-align: left; cursor: pointer;
+  background: var(--sand); color: #3b2c0c; border: none; border-radius: var(--r); padding: 14px 16px; column-gap: 12px;
+}
+.daily-title { font-family: var(--font-display); font-weight: 700; font-size: 20px; }
+.daily-desc { grid-row: 2; font-size: 14px; }
+.daily-go { grid-row: 1 / 3; grid-column: 2; align-self: center; background: #3b2c0c; color: #fff8e6; padding: 6px 16px; border-radius: 999px; font-weight: 700; }
+.daily.done { opacity: .75; }
+.daily.done .daily-go { background: var(--ok); }
+.isle-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.isle-row {
+  display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: 12px; align-items: center;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; cursor: pointer; text-align: left; width: 100%;
+}
+.isle-row:hover { border-color: var(--c); }
+.isle-row .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--c); }
+.isle-row .nm { font-weight: 700; }
+.isle-row .pub { color: var(--muted); font-size: 13px; margin-left: 6px; font-weight: 400; }
+.bar { height: 6px; background: var(--sea-soft); border-radius: 99px; overflow: hidden; margin-top: 6px; }
+.bar span { display: block; height: 100%; background: var(--c); border-radius: 99px; }
+.isle-row .cnt { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 14px; white-space: nowrap; }
+.note { font-size: 13px; color: var(--muted); margin: 0; }
+.empty-grade { background: var(--card); border: 1px dashed var(--line); border-radius: var(--r); padding: 16px; color: var(--muted); }
+
+/* 科目島 */
+.subject-head { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px 24px; margin-bottom: 20px; }
+.subject-title { flex: 1 1 240px; min-width: 0; }
+.subject-title h1 { font-size: 36px; line-height: 1.2; }
+.subject-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.back { text-decoration: none; color: var(--muted); font-size: 15px; flex-basis: 100%; }
+.back.plain { flex-basis: auto; background: none; border: none; cursor: pointer; padding: 0; }
+.btn {
+  border: 1.5px solid var(--line); background: var(--card); border-radius: 999px; padding: 8px 18px; cursor: pointer; font-weight: 500;
+}
+.btn:hover { border-color: var(--sea); }
+.btn.primary { background: var(--c, var(--sea)); border-color: var(--c, var(--sea)); color: #fff; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.units { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.unit {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: grid; grid-template-rows: auto 1fr auto; gap: 10px;
+}
+.unit-no { font-family: var(--font-display); font-size: 15px; color: var(--c); font-weight: 700; }
+.unit h3 { margin: 0; font-size: 18px; line-height: 1.4; }
+.unit-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.unit-stars { font-variant-numeric: tabular-nums; font-size: 14px; color: var(--muted); }
+.unit-stars b { color: var(--star); }
+.unit.done { border-color: var(--c); }
+
+/* 作答 */
+.quiz-card, .result-card {
+  max-width: 720px; margin: 0 auto; background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px; box-shadow: var(--shadow);
+}
+.quiz-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.quiz-label { font-weight: 700; color: var(--c); text-align: center; flex: 1; min-width: 0; }
+.quiz-count { font-variant-numeric: tabular-nums; color: var(--muted); }
+.progress { height: 8px; background: var(--sea-soft); border-radius: 99px; margin: 12px 0 18px; overflow: hidden; }
+.progress span { display: block; height: 100%; width: 0; background: var(--c, var(--sea)); transition: width .3s; }
+.q-unit { margin: 0 0 6px; font-size: 13px; color: var(--muted); }
+.q-text { font-family: var(--font-body); font-size: 21px; line-height: 1.6; font-weight: 700; margin-bottom: 16px; }
+.opts { display: grid; gap: 10px; }
+.opt {
+  display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 10px; text-align: left; cursor: pointer;
+  background: var(--card); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 17px;
+}
+.opt .key { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; font-weight: 700; font-size: 15px; }
+.opt:hover:not(:disabled) { border-color: var(--c, var(--sea)); }
+.opt:disabled { cursor: default; }
+.opt.right { background: var(--ok-bg); border-color: var(--ok); }
+.opt.right .key { background: var(--ok); border-color: var(--ok); color: #fff; }
+.opt.wrong { background: var(--bad-bg); border-color: var(--bad); }
+.opt.wrong .key { background: var(--bad); border-color: var(--bad); color: #fff; }
+.explain { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--sea-soft); font-size: 15px; }
+.explain b.ok { color: var(--ok); }
+.explain b.no { color: var(--bad); }
+.quiz-foot { display: flex; justify-content: flex-end; margin-top: 16px; min-height: 42px; }
+
+.result-card { text-align: center; }
+.score { font-variant-numeric: tabular-nums; margin: 8px 0; }
+.score b { font-size: 64px; font-family: var(--font-display); color: var(--c, var(--sea)); }
+.score span { font-size: 24px; color: var(--muted); }
+.res-msg { font-size: 18px; margin: 0; }
+.res-stars { color: var(--muted); margin: 6px 0 16px; }
+.res-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.review { text-align: left; margin-top: 22px; display: grid; gap: 10px; }
+.review h3 { margin: 0; font-size: 16px; }
+.rv { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; font-size: 15px; }
+.rv p { margin: 2px 0; }
+.rv .yours { color: var(--bad); }
+.rv .ans { color: var(--ok); font-weight: 700; }
+
+/* 紀錄 */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+.stat .k { font-size: 13px; color: var(--muted); }
+.stat .v { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.table-wrap { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); }
+.log { width: 100%; border-collapse: collapse; font-size: 15px; }
+.log th, .log td { padding: 10px 14px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+.log th { font-size: 13px; color: var(--muted); font-weight: 500; letter-spacing: .06em; }
+.log tr:last-child td { border-bottom: none; }
+.log .num { text-align: right; font-variant-numeric: tabular-nums; }
+.tag { display: inline-block; padding: 1px 10px; border-radius: 99px; color: #fff; background: var(--c); font-size: 13px; }
+.empty { color: var(--muted); text-align: center; padding: 24px; }
+
+/* 對話框 */
+.sheet { border: none; border-radius: 20px; padding: 0; max-width: min(520px, calc(100vw - 32px)); width: 100%; background: var(--card); color: var(--ink); box-shadow: var(--shadow); }
+.sheet::backdrop { background: rgba(10, 30, 40, .45); }
+.sheet-body { padding: 22px; display: grid; gap: 12px; }
+.sheet-body h2 { font-size: 26px; }
+.sheet-foot { display: flex; justify-content: flex-end; gap: 8px; }
+.grade-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.grade-btn { border: 1.5px solid var(--line); background: var(--card); border-radius: 12px; padding: 10px; cursor: pointer; text-align: left; }
+.grade-btn b { display: block; font-size: 16px; }
+.grade-btn small { color: var(--muted); }
+.grade-btn.ready { border-color: var(--sea); }
+.grade-btn.current { background: var(--sea); color: #fff; border-color: var(--sea); }
+.grade-btn.current small { color: #e4f4f8; }
+.gbtn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: 1.5px solid var(--line); border-radius: 999px; background: #fff; color: #1f1f1f; padding: 10px 18px; font-weight: 500; cursor: pointer; }
+.field { display: grid; gap: 4px; }
+.field input { font: inherit; padding: 8px 12px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); }
+.hint { font-size: 13px; color: var(--muted); margin: 0; }
+
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 30px); opacity: 0; background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 999px; transition: .3s; pointer-events: none; z-index: 50; max-width: calc(100vw - 32px); }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 820px) {
+  .home-grid { grid-template-columns: minmax(0, 1fr); }
+  .hello { font-size: 28px; }
+  .subject-title h1 { font-size: 30px; }
+  .q-text { font-size: 19px; }
+  .quiz-card, .result-card { padding: 16px; }
+  .brand span { font-size: 19px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* 出題工作室 */
+.studio { display: grid; gap: 16px; max-width: 860px; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 12px; min-width: 0; }
+.panel h2 { font-size: 22px; }
+.panel a { color: var(--sea-deep); }
+.panel code { background: var(--sea-soft); padding: 1px 6px; border-radius: 6px; font-size: 14px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.field select, .field textarea { font: inherit; padding: 8px 12px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); min-width: 0; }
+.field input[type="file"] { padding: 6px; }
+.check { display: flex; gap: 8px; align-items: center; font-size: 15px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.status { font-size: 15px; color: var(--muted); }
+.status.bad { color: var(--bad); }
+.btn.small { padding: 4px 12px; font-size: 14px; }
+.file-btn { display: inline-flex; align-items: center; }
+.draft { margin: 0; padding-left: 24px; display: grid; gap: 10px; }
+.draft > li { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.dq { min-width: 0; }
+.dq-q { margin: 0 0 4px; font-weight: 700; }
+.dq-opts { margin: 0 0 4px; padding-left: 22px; list-style: upper-alpha; }
+.dq-opts li.ok { color: var(--ok); font-weight: 700; }
+.pill { display: inline-block; padding: 1px 10px; border-radius: 99px; font-size: 13px; background: var(--ok-bg); color: var(--ok); }
+.pill.warn { background: var(--bad-bg); color: var(--bad); }
+.note a { color: var(--sea-deep); font-weight: 700; }
+@media (max-width: 640px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } }
+
+/* 注音模式 */
+:root { --font-plain: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; }
+html.zy { --font-display: "Bpmf Huninn", "Noto Sans TC", sans-serif; --font-body: "Bpmf Huninn", "Noto Sans TC", sans-serif; }
+html.zy body { line-height: 1.85; }
+html.zy .no-zy, html.zy .no-zy * { font-family: var(--font-plain) !important; }
+.zy-chip[aria-pressed="true"] { background: var(--sea); border-color: var(--sea); color: #fff; }
+html.zy body { font-size: 18px; }
+html.zy .q-text { font-size: 25px; }
+html.zy .opt { font-size: 20px; }
+html.zy .explain { font-size: 17px; }
+
+/* ===== 繽紛動畫版 ===== */
+:root { --bg-top: #cdeeff; --bg-bot: #fff3dc; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg-top: #123545; --bg-bot: #1a2329; } }
+:root[data-theme="dark"] { --bg-top: #123545; --bg-bot: #1a2329; }
+body { background-color: var(--bg); background-image: linear-gradient(180deg, var(--bg-top) 0, var(--bg) 420px, var(--bg) 70%, var(--bg-bot) 100%); min-height: 100vh; }
+
+/* 地圖動畫 */
+.map-wrap { border: 4px solid #fff; box-shadow: 0 10px 30px rgba(20, 90, 130, .25); }
+.cloud { animation: cloud 70s linear infinite; }
+.cloud.c1 { animation-duration: 95s; }
+.cloud.c2 { animation-duration: 120s; }
+@keyframes cloud { from { transform: translateX(-140px); } to { transform: translateX(700px); } }
+.cloud.c0 { animation-delay: -22s !important; }
+.sun circle:first-child { transform-box: fill-box; transform-origin: center; animation: sunpulse 4s ease-in-out infinite; }
+@keyframes sunpulse { 50% { transform: scale(1.18); opacity: .8; } }
+.twinkle { transform-box: fill-box; transform-origin: center; animation: twinkle 2.6s ease-in-out infinite; }
+@keyframes twinkle { 0%, 100% { opacity: .15; transform: scale(.5); } 50% { opacity: 1; transform: scale(1.15); } }
+.route { animation: march 1.4s linear infinite; }
+@keyframes march { to { stroke-dashoffset: -24; } }
+.ripple { transform-box: fill-box; transform-origin: center; animation: ripple 4.5s ease-in-out infinite; }
+@keyframes ripple { 50% { transform: scale(1.07); opacity: .75; } }
+.bobber { animation: bobber 3.8s ease-in-out infinite; }
+@keyframes bobber { 50% { transform: translateY(-5px); } }
+.isle.picked { animation: picked .42s ease-out; }
+@keyframes picked { 45% { transform: scale(1.12); } 100% { transform: scale(1.04); } }
+.floaty { opacity: 0; animation: floaty 4s ease-in infinite; }
+@keyframes floaty { 0% { opacity: 0; transform: translateY(8px); } 20% { opacity: 1; } 80% { opacity: .9; } 100% { opacity: 0; transform: translateY(-36px); } }
+.flap { transform-box: fill-box; transform-origin: center; animation: flap .32s ease-in-out infinite alternate; }
+@keyframes flap { to { transform: scaleX(.3); } }
+.flag { transform-box: fill-box; transform-origin: left center; animation: flag 1.1s ease-in-out infinite alternate; }
+@keyframes flag { to { transform: skewY(9deg) scaleX(.82); } }
+.wing { transform-box: fill-box; transform-origin: center; animation: wing .45s ease-in-out infinite alternate; }
+@keyframes wing { to { transform: scaleY(-.5); } }
+.fish-jump { opacity: 0; transform-box: fill-box; transform-origin: center; animation: jump 7s ease-in-out infinite; }
+.fish.f2 .fish-jump { animation-delay: 3.6s; }
+@keyframes jump {
+  0%, 70% { opacity: 0; transform: translate(0, 0) rotate(-45deg); }
+  72% { opacity: 1; transform: translate(0, 0) rotate(-45deg); }
+  80% { transform: translate(26px, -40px) rotate(0deg); }
+  88% { opacity: 1; transform: translate(52px, 0) rotate(45deg); }
+  90%, 100% { opacity: 0; transform: translate(52px, 6px) rotate(45deg); }
+}
+
+/* 標題與首頁 */
+.hello { background: linear-gradient(90deg, #e8553f, #f2a01c 45%, #2f9a4c); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.daily { background: linear-gradient(115deg, #ffd96b, #ff9f6e); color: #3b1d00; box-shadow: 0 5px 0 #e2834a; transition: transform .15s; }
+.daily:hover { transform: translateY(-2px); }
+.daily:active { transform: translateY(3px); box-shadow: 0 2px 0 #e2834a; }
+.daily-go { animation: gopulse 1.8s ease-in-out infinite; }
+@keyframes gopulse { 50% { transform: scale(1.08); } }
+.daily.done .daily-go { animation: none; }
+.isle-row { grid-template-columns: 42px minmax(0, 1fr) auto; background: var(--card); background: color-mix(in srgb, var(--c) 9%, var(--card)); border-color: color-mix(in srgb, var(--c) 35%, var(--line)); transition: transform .15s, box-shadow .15s; }
+.isle-row:hover { transform: translateY(-2px); box-shadow: 0 6px 16px color-mix(in srgb, var(--c) 25%, transparent); }
+.isle-row .dot { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 19px; box-shadow: 0 3px 0 color-mix(in srgb, var(--c) 65%, #000); }
+.bar { height: 9px; }
+.bar span { background: repeating-linear-gradient(45deg, var(--c) 0 7px, color-mix(in srgb, var(--c) 70%, #fff) 7px 14px); background-size: 20px 20px; animation: stripes 1.2s linear infinite; }
+@keyframes stripes { to { background-position: 20px 0; } }
+
+/* 按鈕 */
+.btn { transition: transform .12s, box-shadow .12s; }
+.btn.primary { box-shadow: 0 4px 0 color-mix(in srgb, var(--c, var(--sea)) 62%, #000); font-weight: 700; }
+.btn.primary:hover { transform: translateY(-1px); }
+.btn.primary:active { transform: translateY(3px); box-shadow: 0 1px 0 color-mix(in srgb, var(--c, var(--sea)) 62%, #000); }
+
+/* 關卡卡片 */
+.unit { background: var(--card); background: linear-gradient(180deg, color-mix(in srgb, var(--c) 13%, var(--card)), var(--card) 65%); border-color: color-mix(in srgb, var(--c) 30%, var(--line)); transition: transform .18s, box-shadow .18s; animation: cardin .45s ease-out both; }
+.unit:hover { transform: translateY(-3px) rotate(-.4deg); box-shadow: 0 10px 22px color-mix(in srgb, var(--c) 22%, transparent); }
+@keyframes cardin { from { opacity: .3; transform: translateY(10px); } }
+.unit-no { justify-self: start; background: var(--c); color: #fff; padding: 2px 12px; border-radius: 99px; font-size: 14px; }
+.unit.done .unit-stars b { animation: twinkle-ui 1.6s ease-in-out infinite; display: inline-block; }
+@keyframes twinkle-ui { 50% { transform: scale(1.3) rotate(15deg); } }
+
+/* 作答 */
+.quiz-card { background: var(--card); background: linear-gradient(180deg, color-mix(in srgb, var(--c, var(--sea)) 12%, var(--card)), var(--card) 160px); border: 3px solid color-mix(in srgb, var(--c, var(--sea)) 35%, var(--line)); }
+.progress span { background: linear-gradient(90deg, #ffd43b, var(--c, var(--sea))); }
+.opt { transition: transform .12s, border-color .12s; }
+.opt:hover:not(:disabled) { transform: translateY(-2px); }
+.opt .key { background: color-mix(in srgb, var(--c, var(--sea)) 14%, var(--card)); border-color: color-mix(in srgb, var(--c, var(--sea)) 40%, var(--line)); }
+.opt.right { animation: pop .45s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes pop { 40% { transform: scale(1.04); } }
+.opt.shake { animation: shake .45s ease-in-out; }
+@keyframes shake { 20%, 60% { transform: translateX(-7px); } 40%, 80% { transform: translateX(7px); } }
+.plus-star { position: absolute; z-index: 61; pointer-events: none; font-weight: 900; font-size: 22px; color: var(--star); text-shadow: 0 2px 0 rgba(0, 0, 0, .15); animation: rise 1.1s ease-out forwards; }
+@keyframes rise { from { opacity: 1; transform: translateY(0) scale(.8); } to { opacity: 0; transform: translateY(-50px) scale(1.25); } }
+.confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
+.explain { animation: cardin .3s ease-out; }
+
+/* 成績 */
+.res-badge { display: flex; justify-content: center; gap: 10px; margin-top: 6px; }
+.big-star { font-size: 46px; line-height: 1; color: var(--line); transform: scale(0); animation: starpop .55s cubic-bezier(.3, 1.7, .5, 1) forwards; }
+.big-star.on { color: var(--star); text-shadow: 0 3px 0 color-mix(in srgb, var(--star) 60%, #000); }
+@keyframes starpop { to { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .big-star { transform: none; } }
+
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#home" aria-label="回到群島地圖">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="var(--sea)"/><path d="M6 26c4-7 9-10 14-10s10 3 14 10c-5 3-23 3-28 0z" fill="var(--sand)"/><path d="M20 16v-9l7 4-7 3" fill="var(--coral)"/><path d="M4 29c4 2 8 2 12 0s8-2 12 0 8 2 12 0" stroke="var(--foam)" stroke-width="2" fill="none"/></svg>
+      <span>數位學習島</span>
+    </a>
+    <nav class="topnav" aria-label="主要">
+      <button class="chip" id="gradeChip" type="button">選擇年級</button>
+      <button class="chip zy-chip" id="zyChip" type="button" aria-pressed="false" title="在國字旁邊顯示注音">注音</button>
+      <a class="chip ghost" href="#history">學習紀錄</a>
+      <button class="chip user" id="userChip" type="button">登入</button>
+    </nav>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- 群島地圖 -->
+  <section class="view" id="view-home">
+    <div class="home-grid">
+      <div class="map-wrap">
+        <svg id="map" viewBox="0 0 600 470" role="img" aria-label="三座學習島嶼的地圖"></svg>
+        <p class="map-hint">點一座島嶼出航</p>
+      </div>
+      <aside class="dock">
+        <p class="eyebrow" id="homeGrade">五年級上學期</p>
+        <h1 class="hello" id="hello">歡迎登島！</h1>
+        <p class="sub" id="homeSub">三座島嶼、四十多個關卡，答對一題就能點亮一顆星。</p>
+        <div class="total-stars"><span class="star-ico" aria-hidden="true">★</span><b id="totalStars">0</b><span id="totalMax">/ 0</span></div>
+        <button class="daily" id="dailyBtn" type="button">
+          <span class="daily-title">今日航線</span>
+          <span class="daily-desc" id="dailyDesc">每座島各兩題，共 6 題</span>
+          <span class="daily-go">出航</span>
+        </button>
+        <ul class="isle-list" id="isleList"></ul>
+        <p class="note" id="syncNote"></p>
+        <p class="note"><a href="#studio">教師出題工作室</a>：上傳 PDF 試卷，讓 AI 出新題目。</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 單一科目島 -->
+  <section class="view" id="view-subject" hidden>
+    <div class="subject-head">
+      <a class="back" href="#home">← 回群島</a>
+      <div class="subject-title">
+        <p class="eyebrow" id="subjMeta"></p>
+        <h1 id="subjName"></h1>
+      </div>
+      <div class="subject-actions">
+        <div class="total-stars small"><span class="star-ico" aria-hidden="true">★</span><b id="subjStars">0</b><span id="subjMax">/ 0</span></div>
+        <button class="btn primary" id="subjChallenge" type="button">全島挑戰 15 題</button>
+        <button class="btn" id="subjMistakes" type="button">錯題複習</button>
+      </div>
+    </div>
+    <ol class="units" id="unitList"></ol>
+  </section>
+
+  <!-- 作答 -->
+  <section class="view" id="view-quiz" hidden>
+    <div class="quiz-card">
+      <div class="quiz-top">
+        <button class="back plain" id="quitQuiz" type="button">← 離開</button>
+        <span class="quiz-label" id="quizLabel"></span>
+        <span class="quiz-count" id="quizCount"></span>
+      </div>
+      <div class="progress"><span id="quizBar"></span></div>
+      <p class="q-unit" id="qUnit"></p>
+      <h2 class="q-text" id="qText"></h2>
+      <div class="opts" id="qOpts"></div>
+      <div class="explain" id="qExplain" hidden></div>
+      <div class="quiz-foot">
+        <button class="btn primary" id="qNext" type="button" hidden>下一題</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="view" id="view-result" hidden>
+    <div class="result-card">
+      <p class="eyebrow" id="resLabel"></p>
+      <div class="res-badge" id="resBadge" aria-hidden="true"></div>
+      <div class="score"><b id="resScore">0</b><span id="resTotal">/ 0</span></div>
+      <p class="res-msg" id="resMsg"></p>
+      <p class="res-stars" id="resStars"></p>
+      <div class="res-actions">
+        <button class="btn primary" id="resAgain" type="button">再玩一次</button>
+        <button class="btn" id="resBack" type="button">回到島上</button>
+      </div>
+      <div class="review" id="resReview"></div>
+    </div>
+  </section>
+
+  <!-- 出題工作室 -->
+  <section class="view" id="view-studio" hidden></section>
+
+  <!-- 學習紀錄 -->
+  <section class="view" id="view-history" hidden>
+    <div class="subject-head">
+      <a class="back" href="#home">← 回群島</a>
+      <div class="subject-title">
+        <p class="eyebrow">航海日誌</p>
+        <h1>學習紀錄</h1>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="table-wrap">
+      <table class="log">
+        <thead><tr><th>時間</th><th>年級</th><th>科目</th><th>關卡</th><th class="num">成績</th></tr></thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+    <p class="empty" id="logEmpty" hidden>還沒有航海紀錄。回到群島挑一座島出航吧！</p>
+  </section>
+</main>
+
+<!-- 年級選擇 -->
+<dialog class="sheet" id="gradeDlg">
+  <form method="dialog" class="sheet-body" id="gradeForm">
+    <h2>你是幾年級？</h2>
+    <p class="sub">選好年級後，我們會為你打開那個年級的島嶼，並把學習紀錄記在這個年級。</p>
+    <div class="grade-grid" id="gradeGrid"></div>
+    <div class="sheet-foot"><button class="btn" value="cancel" type="submit">稍後再選</button></div>
+  </form>
+</dialog>
+
+<!-- 帳號 -->
+<dialog class="sheet" id="userDlg">
+  <form method="dialog" class="sheet-body">
+    <h2 id="userDlgTitle">登入</h2>
+    <div id="userDlgBody"></div>
+    <div class="sheet-foot"><button class="btn" value="cancel" type="submit">關閉</button></div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ===== Firebase 設定（Google 登入）：填入後就會出現 Google 登入按鈕 ===== -->
+<script>
+/* ===== Firebase 設定（Google 登入與雲端同步） =====
+ * 1. 到 https://console.firebase.google.com 建立專案
+ * 2. 新增「網頁應用程式」，把拿到的設定值貼在下面
+ * 3. Authentication → 登入方式 → 啟用「Google」
+ * 4. Authentication → 設定 → 授權網域 → 加入「你的帳號.github.io」
+ * 5. 建立 Firestore Database，並貼上 firestore.rules 的規則
+ *
+ * apiKey 留空時，網站會以「本機模式」運作：
+ * 學習紀錄只存在這台電腦的瀏覽器裡，不需要登入也能使用。
+ * （Firebase 的 apiKey 本來就會出現在網頁中，安全性由 firestore.rules 保護。）
+ */
+window.FIREBASE_CONFIG = {
+  apiKey: '',
+  authDomain: '',
+  projectId: '',
+  storageBucket: '',
+  messagingSenderId: '',
+  appId: ''
+};
+
+</script>
+<!-- ===== 題庫：g5a-chinese.js ===== -->
+<script>
+/* 國語 五上（南一版）題庫
+ * 題目格式：[題目, [選項…], 正確答案索引(從0起), 解析]
+ * 依南一版第九冊課次主題與段考常見題型編寫，非課本原文。
+ */
+window.QB = window.QB || {};
+window.QB['g5a-chinese'] = {
+  key: 'chinese', name: '國語', island: '國語島', publisher: '南一版', grade: '5上',
+  units: [
+    { id: 'L1', title: '第一課 幸福筆記本', qs: [
+      ['「幸福」的「幸」，部首是哪一個？', ['土', '干', '十', '立'], 1, '「幸」的部首是「干」，查字典時要從「干」部找。'],
+      ['把生活中「點點滴滴」的小事記下來。「點點滴滴」是什麼意思？', ['很多水滴', '零碎細小的事物', '下雨的聲音', '寫字很慢'], 1, '「點點滴滴」用來形容零碎、細小的事物。'],
+      ['下列哪一句最能表現「知足常樂」的態度？', ['別人有的我一定也要有', '今天吃到媽媽煮的湯，覺得好滿足', '考不到一百分就很生氣', '抱怨天氣太熱不想出門'], 1, '知足常樂是懂得滿足，就能常保快樂。'],
+      ['「記錄」和「紀錄」的用法，下列哪一句正確？', ['他打破了全校跑步的記錄', '我每天把心情紀錄在筆記本裡', '老師把同學的發言記錄下來', '這是一項世界記錄'], 2, '「記錄」多當動詞，表示把事情寫下來；「紀錄」多當名詞，例如「破紀錄」。'],
+    ]},
+    { id: 'L2', title: '第二課 做人做事做長久', qs: [
+      ['「一諾千金」是什麼意思？', ['一句話值很多錢', '說話算話，很守信用', '答應別人要收費', '說話很有學問'], 1, '一諾千金形容說話守信用，答應的事一定做到。'],
+      ['「長久」的「長」應該怎麼讀？', ['ㄓㄤˇ', 'ㄔㄤˊ', 'ㄓㄤˋ', 'ㄔㄤˇ'], 1, '「長久」表示時間久，讀ㄔㄤˊ；「長大」才讀ㄓㄤˇ。'],
+      ['下列哪一個成語和「腳踏實地」意思最接近？', ['好高騖遠', '按部就班', '半途而廢', '投機取巧'], 1, '腳踏實地、按部就班都是做事踏實、一步一步來。'],
+      ['「做人要誠實，做事要負責。」這句話使用了哪一種寫作手法？', ['誇飾', '對偶（句子結構相對）', '擬人', '設問'], 1, '前後兩句字數相同、結構相對，屬於對偶。'],
+    ]},
+    { id: 'L3', title: '第三課 孔雀錯了', qs: [
+      ['故事中「錯了」的角色常常是因為什麼原因？', ['太過驕傲，只看重外表', '太熱心幫助別人', '太認真讀書', '太早起床'], 0, '寓言常透過驕傲自大的角色，提醒我們不要只看外表、自以為是。'],
+      ['下列哪一個成語和「驕傲自大」意思相反？', ['目中無人', '虛懷若谷', '自以為是', '得意忘形'], 1, '虛懷若谷形容非常謙虛，和驕傲自大相反。'],
+      ['「孔雀展開美麗的羽毛，好像一把彩色的扇子。」這句話用了什麼修辭？', ['譬喻', '誇飾', '排比', '映襯'], 0, '用「好像」把羽毛比作扇子，是譬喻法。'],
+      ['寓言故事最主要的目的是什麼？', ['介紹動物的生活習性', '用故事說出一個道理', '記錄真實發生的歷史', '說明科學實驗步驟'], 1, '寓言用簡短故事寄託道理，讓人得到啟發。'],
+    ]},
+    { id: 'L4', title: '第四課 特別的海', qs: [
+      ['「浪花嘩啦嘩啦的拍打著岸邊。」這句話使用了哪一種摹寫？', ['視覺摹寫', '聽覺摹寫', '嗅覺摹寫', '味覺摹寫'], 1, '「嘩啦嘩啦」是聲音，屬於聽覺摹寫。'],
+      ['「大海像一塊閃閃發亮的藍色綢緞。」這句話把大海比作什麼？', ['藍色的天空', '發亮的綢緞', '閃亮的星星', '藍色的寶石'], 1, '譬喻句中「大海」是喻體，「綢緞」是喻依。'],
+      ['下列哪一個詞語最適合形容海面很平靜？', ['波濤洶湧', '風平浪靜', '驚濤駭浪', '排山倒海'], 1, '風平浪靜形容沒有風浪、非常平靜。'],
+      ['「海風輕輕的撫摸我的臉頰。」這句話用了哪一種修辭？', ['擬人', '誇飾', '設問', '引用'], 0, '海風本身不會「撫摸」，把它當成人來寫是擬人法。'],
+    ]},
+    { id: 'L5', title: '第五課 漫遊花東', qs: [
+      ['下列哪一個景點位在花蓮縣？', ['太魯閣峽谷', '日月潭', '阿里山', '墾丁大街'], 0, '太魯閣峽谷位在花蓮縣，以大理石峽谷聞名。'],
+      ['「花東縱谷」位在哪兩座山脈之間？', ['雪山山脈與玉山山脈', '中央山脈與海岸山脈', '阿里山山脈與玉山山脈', '中央山脈與雪山山脈'], 1, '花東縱谷夾在中央山脈和海岸山脈之間。'],
+      ['遊記中按照「走到哪裡、看到什麼」的順序來寫，稱為依照什麼順序？', ['時間順序', '遊蹤（空間移動）順序', '重要性順序', '筆畫順序'], 1, '遊記常依遊蹤移動來安排段落，讀者就像跟著作者一起旅行。'],
+      ['「山明水秀」最適合用來形容什麼？', ['熱鬧的夜市', '風景優美的地方', '擁擠的車站', '安靜的圖書館'], 1, '山明水秀形容山水景色秀麗。'],
+    ]},
+    { id: 'L6', title: '第六課 護送螃蟹過馬路', qs: [
+      ['陸蟹媽媽冒險穿越馬路，最主要是為了什麼？', ['到海邊釋放小寶寶', '去找食物', '躲避下雨', '搬到山上住'], 0, '許多陸蟹住在陸地，繁殖季時母蟹要到海邊把幼體釋放到海中。'],
+      ['「護送」的意思最接近下列哪一個？', ['陪同並保護', '派人送信', '把東西送人', '自己一個人走'], 0, '護送是一路陪同並加以保護。'],
+      ['志工晚上拿著手電筒指揮車輛慢行，這樣的行動最能表現什麼精神？', ['愛護生命、保護生態', '比賽輸贏', '節省金錢', '追求名氣'], 0, '幫陸蟹安全過馬路，是尊重生命、保護生態的表現。'],
+      ['「這只是舉手之勞。」意思是什麼？', ['舉手發言', '非常輕鬆、容易做到的小事', '需要很多人幫忙', '舉起手來投降'], 1, '舉手之勞指輕而易舉、不費力的事。'],
+    ]},
+    { id: 'L7', title: '第七課 高第的魔法建築', qs: [
+      ['建築師高第是哪一個國家的人？', ['法國', '西班牙', '義大利', '英國'], 1, '安東尼・高第是西班牙建築師，作品多在巴塞隆納。'],
+      ['高第設計的「聖家堂」有什麼特別的地方？', ['已經拆除', '開工一百多年，至今仍在興建', '只蓋了一天', '是一座木造小屋'], 1, '聖家堂從1882年開工，至今仍持續建造中。'],
+      ['高第的建築常有彎曲的線條和動植物造型，他的靈感多半來自哪裡？', ['大自然', '電腦遊戲', '工廠機器', '數學考卷'], 0, '高第喜歡觀察大自然，把樹木、海浪、貝殼的形狀融入建築。'],
+      ['「別出心裁」的意思是什麼？', ['和別人一模一樣', '想法獨特，與眾不同', '裁縫衣服', '心情很差'], 1, '別出心裁形容構想新奇獨特，不落俗套。'],
+    ]},
+    { id: 'L8', title: '第八課 嘗嘗我的家鄉味', qs: [
+      ['「熱騰騰的湯一入口，鮮甜的滋味在舌尖散開。」這句話主要用了哪一種摹寫？', ['味覺摹寫', '聽覺摹寫', '嗅覺摹寫', '視覺摹寫'], 0, '「鮮甜的滋味」描寫吃到的味道，是味覺摹寫。'],
+      ['形容食物香得讓人很想吃，可以用哪一個成語？', ['垂涎三尺', '食不下嚥', '狼吞虎嚥', '津津有味'], 0, '垂涎三尺形容非常想吃的樣子；津津有味是吃得很有滋味。'],
+      ['新竹的地方特產，下列哪一組最正確？', ['米粉、貢丸', '鳳梨酥、太陽餅', '擔仔麵、虱目魚粥', '肉圓、蚵仔煎'], 0, '新竹風大，適合曬米粉，貢丸也很有名。'],
+      ['「嘗嘗」這種重複同一個字的詞，叫做什麼？', ['疊字詞', '外來語', '多音字', '同音字'], 0, '像嘗嘗、看看、慢慢都是疊字詞，語氣較輕鬆。'],
+    ]},
+    { id: 'L9', title: '第九課 小小力量將世界照亮', qs: [
+      ['下列哪一個成語最符合「小小力量也能聚成大力量」？', ['聚沙成塔', '杯水車薪', '一事無成', '班門弄斧'], 0, '聚沙成塔比喻積少成多，小力量累積起來就很可觀。'],
+      ['「微不足道」是什麼意思？', ['非常重要', '小到不值得一提', '路程很遠', '道理很深'], 1, '微不足道指非常渺小，不值得一提。'],
+      ['「每個人都是一盞小燈，點亮自己，也照亮別人。」把人比作小燈，主要想表達什麼？', ['人要多開燈', '每個人都能發揮自己的力量幫助別人', '電費很貴', '晚上要早點睡'], 1, '小燈象徵每個人的善意與能力，能為他人帶來溫暖。'],
+      ['下列哪一個行動最能把「小小力量」用在幫助別人？', ['把零用錢全部拿去買玩具', '整理不穿的衣服捐給需要的人', '看到垃圾假裝沒看見', '只顧自己玩遊戲'], 1, '捐出物資是具體的善行，小小行動也能幫助別人。'],
+    ]},
+    { id: 'L10', title: '第十課 男生說，女生說', qs: [
+      ['下列哪一句話屬於性別「刻板印象」？', ['每個人都可以選自己喜歡的顏色', '男生不可以哭', '女生也能當工程師', '做家事是全家人的事'], 1, '認為男生不能表達情緒，是對性別的刻板印象。'],
+      ['和同學意見不同時，最好的討論態度是什麼？', ['大聲吵到對方閉嘴', '先聽完對方的想法，再說出自己的理由', '直接不理對方', '找老師告狀'], 1, '討論要互相尊重，先傾聽再表達。'],
+      ['「各有千秋」的意思是什麼？', ['各自活了一千年', '各有各的長處', '大家都一樣差', '秋天的景色'], 1, '各有千秋表示各有特色與長處。'],
+      ['「男生說」「女生說」並列的寫法，最想讓讀者了解什麼？', ['男生比女生厲害', '不同觀點都值得被聽見', '女生比男生厲害', '吵架很好玩'], 1, '並列不同觀點，讓讀者學會從多角度看事情、尊重差異。'],
+    ]},
+    { id: 'L11', title: '第十一課 耶誕禮物', qs: [
+      ['故事中，妻子賣掉美麗的長髮為丈夫買錶鏈，丈夫卻賣掉金錶為妻子買髮梳。這樣的結局屬於哪一種？', ['意料之外的結局', '平淡無奇的結局', '沒有結局', '悲慘的戰爭結局'], 0, '這是作家歐・亨利常用的「出人意料」結尾，讓讀者印象深刻。'],
+      ['兩人的禮物都派不上用場，故事真正想告訴我們什麼？', ['買禮物要先問清楚', '真正珍貴的是願意為對方付出的愛', '禮物越貴越好', '不要過耶誕節'], 1, '禮物雖然用不到，但彼此的心意才是最珍貴的禮物。'],
+      ['「她把積蓄數了三遍，只有一塊八毛七分。」這個細節主要表現出什麼？', ['她很會數數', '他們生活很拮据', '她很有錢', '她喜歡數錢'], 1, '用具體金額寫出家境清苦，更顯出她為丈夫付出的心意。'],
+      ['「拮据」的讀音是什麼？', ['ㄐㄧㄝˊ ㄐㄩ', 'ㄐㄧˊ ㄐㄩˋ', 'ㄐㄧㄝˊ ㄐㄩˋ', 'ㄐㄧˊ ㄐㄩ'], 0, '拮据讀作ㄐㄧㄝˊ ㄐㄩ，形容經濟困難、手頭很緊。'],
+    ]},
+    { id: 'L12', title: '第十二課 漫遊詩情', qs: [
+      ['白居易〈問劉十九〉：「綠蟻新醅酒，紅泥小火爐。」其中「綠蟻」指的是什麼？', ['綠色的螞蟻', '新釀的酒上浮起的細小泡沫', '綠色的茶葉', '火爐上的灰'], 1, '新釀的米酒沒有過濾，上面浮著像螞蟻般的綠色泡沫。'],
+      ['〈問劉十九〉每句五個字、共四句，屬於哪一種詩體？', ['五言絕句', '七言絕句', '五言律詩', '新詩'], 0, '每句五字、四句，是五言絕句。'],
+      ['「晚來天欲雪，能飲一杯無？」詩人最想做什麼？', ['邀請朋友一起喝酒聊天', '叫朋友趕快回家', '抱怨天氣太冷', '賣酒賺錢'], 0, '天快下雪，詩人準備好酒和火爐，邀朋友來共飲。'],
+      ['「獨在異鄉為異客，每逢佳節倍思親。」這兩句詩主要表達什麼心情？', ['思念家人', '歡迎朋友', '讚美風景', '慶祝豐收'], 0, '出自王維〈九月九日憶山東兄弟〉，寫在外地過節更想念家人。'],
+      ['李白〈贈汪倫〉：「桃花潭水深千尺，不及汪倫送我情。」用潭水的深來比較什麼？', ['朋友送別的情意更深', '桃花很漂亮', '潭水很危險', '汪倫很會游泳'], 0, '用深千尺的潭水來比，突顯汪倫的友情更深。'],
+    ]},
+    { id: 'LX', title: '語文常識與閱讀', qs: [
+      ['「他經歷了一場大病，瘦得像竹竿一樣。」最適合用哪一個成語代替？', ['骨瘦如柴', '爐火純青', '通權達變', '欲罷不能'], 0, '骨瘦如柴形容非常瘦。'],
+      ['經過數十年的苦心鑽研，他的廚藝已經到了什麼程度？', ['爐火純青', '無病呻吟', '厚此薄彼', '不甘示弱'], 0, '爐火純青比喻技藝或學問達到純熟完美的境界。'],
+      ['「這件事已勢不可擋，想阻擋的人就像＿＿。」空格最適合填哪一個成語？', ['螳臂當車', '如虎添翼', '畫龍點睛', '對牛彈琴'], 0, '螳臂當車比喻自不量力，想阻擋強大的力量。'],
+      ['下列哪一個「肥」的意思和其他三個不同？', ['肥沃', '肥胖', '肥肉', '肥豬'], 0, '「肥沃」的肥指土地養分多；其他三個指脂肪多。'],
+      ['「我大喊□難道這就是我生命的終點□不□我得努力救自己□」依序填入哪一組標點最恰當？', ['：「 ？ ！ 。」', '， ！ ， 。', '。 ， ？ ！', '： ， 。 ？'], 0, '說話前用冒號和引號，疑問句用問號，「不」語氣強烈用驚嘆號。'],
+      ['「縱使下大雨，他＿＿＿＿堅持去照顧受傷的小狗。」最適合填入哪個詞？', ['卻仍然', '所以', '因為', '或者'], 0, '「縱使……卻（仍然）……」是讓步轉折句型。'],
+      ['議論文通常包含哪三個要素？', ['論點、論據、結論', '人物、時間、地點', '開始、經過、結果', '主角、配角、旁白'], 0, '議論文由論點（主張）、論據（證據）、結論組成。'],
+      ['下列哪一個詞語用字完全正確？', ['再接再厲', '再接再勵', '在接再厲', '再皆再厲'], 0, '「再接再厲」的「厲」是磨利的意思，不要寫成勵。'],
+      ['「難道你不知道上課要專心嗎？」這是什麼句子？', ['用問句表達肯定意思的激問', '真的不知道答案的疑問', '請求句', '感嘆句'], 0, '激問的答案就在問題的反面：上課一定要專心。'],
+      ['「他一口氣吃了一百碗飯。」用了什麼修辭？', ['誇飾', '譬喻', '擬人', '排比'], 0, '故意誇大事實，是誇飾法。'],
+      ['下列哪一組詞語的「行」讀音相同？', ['行人／步行', '銀行／行走', '行列／旅行', '行業／行動'], 0, '行人、步行的行都讀ㄒㄧㄥˊ；銀行、行列、行業讀ㄏㄤˊ。'],
+      ['「忍受無數的失敗」可改寫成哪個「（ ）的（ ）」短語，意思最接近？', ['堅毅的心', '快樂的歌', '溫暖的家', '藍色的海'], 0, '能忍受失敗，表現出堅毅的心。'],
+    ]},
+  ]
+};
+
+</script>
+<!-- ===== 題庫：g5a-science.js ===== -->
+<script>
+/* 自然科學 五上（南一版）題庫
+ * 題目格式：[題目, [選項…], 正確答案索引(從0起), 解析]
+ */
+window.QB = window.QB || {};
+window.QB['g5a-science'] = {
+  key: 'science', name: '自然科學', island: '自然島', publisher: '南一版', grade: '5上',
+  units: [
+    { id: 'U1A', title: '單元1 太陽與光｜活動1 太陽在天空中的位置變化', qs: [
+      ['一天之中，太陽從哪一個方向升起？', ['東方', '西方', '南方', '北方'], 0, '太陽東升西落，這是地球自轉造成的。'],
+      ['在臺灣，冬天中午的太陽大約位在天空的哪一個方位？', ['偏南方', '偏北方', '正東方', '正西方'], 0, '臺灣在北半球，中午太陽多在偏南的天空。'],
+      ['描述太陽在天空中的位置，需要哪兩個數據？', ['方位角與高度角', '溫度與濕度', '長度與重量', '速度與時間'], 0, '方位角說明在哪個方向，高度角說明離地平線有多高。'],
+      ['一天中太陽高度角最大、影子最短的時候大約是？', ['清晨', '中午', '傍晚', '半夜'], 1, '中午太陽最高，影子最短。'],
+      ['早上太陽在東方時，竿子的影子會朝哪個方向？', ['東方', '西方', '南方', '天空'], 1, '影子在物體背光的一側，和太陽方向相反。'],
+      ['測量太陽的方位時，需要使用哪一種工具？', ['指北針（方位盤）', '溫度計', '彈簧秤', '量筒'], 0, '先用指北針找出北方，才能判斷太陽的方位角。'],
+      ['觀察太陽時，下列哪一個做法正確？', ['用眼睛直接看太陽', '用望遠鏡直接看太陽', '透過遮光板或觀察影子來判斷', '戴一般眼鏡就可以直視'], 2, '直視太陽會傷害眼睛，要用安全的方法觀察。'],
+      ['同一地點，夏天中午和冬天中午的太陽高度角比較，何者較高？', ['夏天', '冬天', '一樣高', '無法比較'], 0, '夏天中午太陽較高、影子較短；冬天中午太陽較低、影子較長。'],
+    ]},
+    { id: 'U1B', title: '單元1 太陽與光｜活動2 認識光的現象與特性', qs: [
+      ['陽光通過三稜鏡後分成多種顏色，這種現象叫做什麼？', ['色散', '反射', '蒸發', '凝結'], 0, '白光由多種色光組成，經三稜鏡折射後分開，稱為色散。'],
+      ['把筷子斜放進裝水的杯子，看起來好像折斷了，這是光的什麼現象？', ['折射', '反射', '直線前進', '吸收'], 0, '光從水進入空氣時行進方向改變，稱為折射。'],
+      ['我們能在鏡子中看到自己，是利用光的什麼特性？', ['反射', '折射', '色散', '溶解'], 0, '光照到平滑的鏡面會反射回我們的眼睛。'],
+      ['影子的形成，說明了光具有什麼特性？', ['光會直線前進', '光會轉彎', '光有重量', '光會溶解'], 0, '光直線前進，被物體擋住的地方就形成影子。'],
+      ['雨後天空出現彩虹，最主要和什麼有關？', ['陽光經過空中小水滴折射、反射而色散', '雲的顏色本來就是七彩', '月亮反射', '風把顏色吹出來'], 0, '小水滴像許多小三稜鏡，把陽光分成七彩。'],
+      ['用放大鏡把陽光聚集在紙上，紙會變熱甚至燒焦，這說明光具有什麼？', ['能量（熱）', '重量', '聲音', '氣味'], 0, '放大鏡（凸透鏡）會把光聚集，集中的光能產生熱。'],
+      ['潛水艇的潛望鏡主要利用什麼原理讓人看到水面上的景物？', ['光的反射', '光的色散', '熱的傳導', '空氣的浮力'], 0, '潛望鏡用兩面鏡子反射光線。'],
+    ]},
+    { id: 'U2', title: '單元2 植物世界', qs: [
+      ['植物的根，最主要的功能是什麼？', ['吸收水分和養分，並固定植物', '進行光合作用', '開花結果', '吸引昆蟲'], 0, '根吸收水分和養分，也把植物牢牢固定在土裡。'],
+      ['把白色的花插在加了紅色色素的水中，花瓣漸漸變紅，說明了莖有什麼功能？', ['運輸水分', '製造養分', '保護種子', '吸收陽光'], 0, '水從根經過莖運輸到花和葉。'],
+      ['植物的葉子利用陽光、水和二氧化碳製造養分，這叫做什麼作用？', ['光合作用', '蒸散作用', '呼吸作用', '中和作用'], 0, '葉子中的葉綠體能進行光合作用。'],
+      ['用透明塑膠袋套住葉子，一段時間後袋內出現水珠，這是哪一種作用？', ['蒸散作用', '光合作用', '溶解作用', '色散作用'], 0, '水分從葉的氣孔散失到空氣中，稱為蒸散作用。'],
+      ['下列哪一種植物可以用「葉」來繁殖？', ['落地生根', '玉米', '向日葵', '稻子'], 0, '落地生根的葉緣會長出小芽，落地後能長成新植株。'],
+      ['馬鈴薯放久了會從芽眼長出新芽，它是用什麼部位繁殖？', ['莖', '葉', '花', '種子'], 0, '馬鈴薯是地下的塊莖，芽眼可長出新植株。'],
+      ['地瓜（番薯）可以長出新芽，它是植物的哪一個部位？', ['根', '莖', '葉', '果實'], 0, '地瓜是塊根，屬於根繁殖。'],
+      ['花朵中，負責產生花粉的構造是什麼？', ['雄蕊', '雌蕊', '花萼', '花瓣'], 0, '雄蕊產生花粉；花粉落到雌蕊的柱頭上稱為授粉。'],
+      ['花授粉以後，哪一個部分會發育成果實？', ['子房', '花瓣', '花萼', '花藥'], 0, '雌蕊的子房發育成果實，裡面的胚珠發育成種子。'],
+      ['鬼針草的果實常黏在褲管上，它是靠什麼方式傳播？', ['附著在動物或人身上', '風力', '水力', '自己彈開'], 0, '鬼針草果實有倒刺，能附著動物毛皮被帶到遠方。'],
+      ['蒲公英的種子有白色冠毛，主要靠什麼傳播？', ['風', '水', '動物吃下', '自己彈射'], 0, '冠毛像小降落傘，能隨風飄送。'],
+      ['稻子、玉米、蔥的根屬於哪一種類型？', ['鬚根', '軸根', '氣生根', '塊根'], 0, '這類植物的根粗細差不多、像鬍鬚，稱為鬚根。'],
+      ['下列哪一項是植物在人類生活中「藥用」的例子？', ['用蘆薈汁塗抹輕微曬傷', '用竹子蓋房子', '用棉花做衣服', '用稻米煮飯'], 0, '蘆薈可舒緩肌膚，屬於藥用；竹子是建材、棉花是纖維、稻米是糧食。'],
+    ]},
+    { id: 'U3', title: '單元3 水溶液', qs: [
+      ['把糖放進水中攪拌後變成糖水，其中「糖」稱為什麼？', ['溶質', '溶劑', '溶液', '沉澱'], 0, '被溶解的物質是溶質，負責溶解的水是溶劑。'],
+      ['50公克的水加入10公克的食鹽，完全溶解後，食鹽水重多少？', ['60公克', '50公克', '40公克', '10公克'], 0, '溶液重量＝溶劑重量＋溶質重量＝50＋10＝60公克。'],
+      ['持續加入食鹽，最後怎麼攪拌都無法再溶解，這時的溶液稱為？', ['飽和溶液', '中性溶液', '純水', '酸性溶液'], 0, '水能溶解的物質有限度，達到限度就是飽和。'],
+      ['想讓更多的糖溶解在同一杯水裡，下列哪個方法有效？', ['提高水溫', '把杯子換成紅色', '把杯子放進冰箱', '一直盯著看'], 0, '多數固體在溫度較高的水中，可以溶解得更多。'],
+      ['把食鹽水倒入面積較大的盤子，放在通風處，主要是為了什麼？', ['加快水分蒸發，取回食鹽', '讓食鹽變成糖', '讓水變酸', '讓食鹽變重'], 0, '面積大、通風好，水分蒸發較快，留下食鹽結晶。'],
+      ['將藍色石蕊試紙沾到檸檬汁，試紙會變成什麼顏色？', ['紅色', '藍色', '綠色', '不變色'], 0, '酸性水溶液使藍色石蕊試紙變紅。'],
+      ['將紅色石蕊試紙沾到小蘇打水，試紙會變成什麼顏色？', ['藍色', '紅色', '黃色', '不變色'], 0, '鹼性水溶液使紅色石蕊試紙變藍。'],
+      ['紫色高麗菜汁加入醋，顏色會變得如何？', ['偏紅（粉紅）', '偏藍綠', '維持紫色', '變成黑色'], 0, '紫色高麗菜汁遇酸偏紅，遇鹼偏藍綠或黃綠，中性維持紫色。'],
+      ['下列哪一種水溶液是中性？', ['食鹽水', '檸檬汁', '肥皂水', '石灰水'], 0, '食鹽水與糖水是中性；檸檬汁是酸性；肥皂水、石灰水是鹼性。'],
+      ['下列哪一種水溶液會使紅色石蕊試紙變藍？', ['石灰水', '醋', '糖水', '純水'], 0, '石灰水是鹼性。'],
+      ['將蝶豆花茶滴入檸檬汁中，顏色最可能變成什麼？', ['紫紅色', '藍綠色', '黃色', '黑色'], 0, '蝶豆花茶本身是藍色，遇酸變紫紅，遇鹼變藍綠。'],
+      ['檢測水溶液的導電性時，下列哪一種水溶液最不容易讓 LED 發亮？', ['糖水', '食鹽水', '醋', '小蘇打水'], 0, '糖水不容易導電；食鹽水、醋、小蘇打水都能導電。'],
+      ['連接 LED 時，正確的接法是什麼？', ['長腳接電池正極，短腳接電池負極', '長腳接負極，短腳接正極', '兩隻腳都接正極', '怎麼接都可以'], 0, 'LED 有方向性，長腳接正極才會發亮。'],
+      ['測完一種水溶液要換下一種之前，電線應該怎麼處理？', ['先用清水洗淨並擦乾', '直接放入下一杯', '丟掉換新的', '放進冰箱'], 0, '避免前一種溶液混入，影響檢測結果。'],
+      ['胃酸過多時服用胃藥，是利用什麼原理？', ['酸鹼中和', '光的折射', '蒸發', '摩擦生熱'], 0, '胃藥多含鹼性物質，可中和過多的胃酸。'],
+      ['下列哪一項是聞水溶液氣味的正確方法？', ['用手輕輕搧向鼻子來聞', '鼻子直接靠近瓶口用力吸', '用嘴巴嘗一嘗', '倒在手上搓'], 0, '實驗室中不可直接聞或嘗，要用手搧聞。'],
+    ]},
+    { id: 'U4', title: '單元4 力與運動', qs: [
+      ['下列哪一種工具可以用來測量力的大小？', ['彈簧秤', '量角器', '直尺', '溫度計'], 0, '彈簧秤利用彈簧伸長量來測量力的大小。'],
+      ['在彈簧的彈性限度內，掛的砝碼越多，彈簧的伸長量會如何？', ['越長', '越短', '不變', '先長後短'], 0, '在彈性限度內，伸長量和拉力大小成正比。'],
+      ['一個砝碼讓彈簧伸長 1.2 公分。在彈性限度內，掛 5 個同樣的砝碼，彈簧會伸長多少？', ['6.0 公分', '5.0 公分', '7.2 公分', '1.2 公分'], 0, '1.2 × 5 ＝ 6.0 公分。'],
+      ['彈簧原長 2.6 公分，掛上糖果袋後總長 7.4 公分。若每個砝碼使它伸長 1.2 公分，糖果袋約等於幾個砝碼重？', ['4 個', '5 個', '6 個', '3 個'], 0, '伸長量＝7.4－2.6＝4.8 公分，4.8 ÷ 1.2 ＝ 4。'],
+      ['為什麼不能在彈簧下無限制增加砝碼？', ['超過彈性限度，彈簧會變形無法恢復', '砝碼會變輕', '彈簧會變短', '桌子會不見'], 0, '超過彈性限度，彈簧就無法回到原來長度。'],
+      ['下列哪一種力「不需要接觸」就能產生作用？', ['重力', '摩擦力', '推力', '拉力'], 0, '重力、磁力不必接觸；摩擦力、推力、拉力都需要接觸。'],
+      ['摩擦力的方向和物體運動的方向有什麼關係？', ['相反', '相同', '垂直向上', '沒有關係'], 0, '摩擦力會阻礙運動，方向與運動方向相反。'],
+      ['下列哪一項是「增加」摩擦力的例子？', ['雪地行車加裝鐵鍊', '腳踏車鏈條加潤滑油', '滑水道上有水', '直排輪的光滑輪子'], 0, '鐵鍊讓輪胎與地面更粗糙，增加摩擦力，避免打滑。'],
+      ['下列哪一項是「減少」摩擦力的例子？', ['在門的鉸鏈上加潤滑油', '鞋底設計紋路', '寶特瓶蓋做條紋', '在樓梯貼止滑條'], 0, '潤滑油讓接觸面更平滑，減少摩擦力。'],
+      ['小形踢足球，球在草地上比在水泥地上滾得慢，主要原因是什麼？', ['草地較粗糙，摩擦力較大', '草地摩擦力較小', '球變重了', '草地比較平滑'], 0, '接觸面越粗糙，摩擦力越大，球速減慢得越快。'],
+      ['在一分鐘內，小玄跑的距離比阿豐遠，誰的速度比較快？', ['小玄', '阿豐', '一樣快', '無法比較'], 0, '相同時間內，移動距離越遠，速度越快。'],
+      ['跑一圈操場，小宏花2分6秒、阿元1分50秒、大明2分15秒。誰最快？', ['阿元', '小宏', '大明', '一樣快'], 0, '相同距離，花的時間越短越快。'],
+      ['做摩擦力實驗時，除了要改變的接觸面以外，其他條件都要保持相同，這些相同的條件稱為？', ['控制變因', '操作變因', '應變變因', '實驗結果'], 0, '控制變因要保持相同；操作變因是刻意改變的；應變變因是觀察的結果。'],
+      ['盪秋千時，秋千在什麼位置速度最快？', ['最低點', '最高點', '剛開始推的時候', '每個位置都一樣'], 0, '最高點位能最大、速度最慢；到最低點位能轉成動能，速度最快。'],
+      ['摩擦雙手會覺得溫暖，這是哪一種能量轉換？', ['動能轉換成熱能', '熱能轉換成光能', '電能轉換成動能', '光能轉換成電能'], 0, '摩擦時運動的能量轉成熱。'],
+      ['開電風扇讓扇葉轉動，是哪一種能量轉換？', ['電能轉換成動能', '動能轉換成電能', '光能轉換成熱能', '熱能轉換成電能'], 0, '電風扇用電讓馬達轉動，是電能變成動能。'],
+    ]},
+  ]
+};
+
+</script>
+<!-- ===== 題庫：g5a-social.js ===== -->
+<script>
+/* 社會 五上（康軒版）題庫
+ * 題目格式：[題目, [選項…], 正確答案索引(從0起), 解析]
+ */
+window.QB = window.QB || {};
+window.QB['g5a-social'] = {
+  key: 'social', name: '社會', island: '社會島', publisher: '康軒版', grade: '5上',
+  units: [
+    { id: 'S1', title: '第一單元 臺灣的位置、社會規範與法律', qs: [
+      ['臺灣位在哪一個大洋的西側？', ['太平洋', '大西洋', '印度洋', '北冰洋'], 0, '臺灣位於太平洋西側、歐亞大陸東南方。'],
+      ['臺灣和中國大陸之間隔著哪一個海峽？', ['臺灣海峽', '巴士海峽', '麻六甲海峽', '直布羅陀海峽'], 0, '臺灣西邊是臺灣海峽；南邊的巴士海峽隔開臺灣與菲律賓。'],
+      ['北回歸線通過臺灣的哪兩個縣？', ['嘉義縣與花蓮縣', '臺北市與宜蘭縣', '屏東縣與臺東縣', '桃園市與新竹縣'], 0, '北回歸線通過嘉義縣與花蓮縣，兩地都設有北回歸線標誌。'],
+      ['臺灣位在海上交通要道，這樣的位置對文化發展最大的影響是什麼？', ['容易與各地交流，形成多元文化', '和外界完全隔絕', '只能發展農業', '沒有任何影響'], 0, '海運便利，各國人來來往往，讓臺灣文化豐富多元。'],
+      ['下列哪一種社會規範具有「強制力」，違反時會受到國家處罰？', ['法律', '道德', '風俗習慣', '宗教'], 0, '法律由國家制定，違反會受處罰；道德靠良心與輿論約束。'],
+      ['過年發紅包、端午節吃粽子，屬於哪一種社會規範？', ['風俗習慣', '法律', '校規', '交通規則'], 0, '長期流傳、大家共同遵守的生活方式是風俗習慣。'],
+      ['我國位階最高的法律是什麼？', ['憲法', '民法', '刑法', '校規'], 0, '憲法是國家根本大法，其他法律不能與憲法牴觸。'],
+      ['下列哪一項同時是人民的「權利」也是「義務」？', ['受國民教育', '納稅', '服兵役', '投票'], 0, '受國民教育是憲法規定的權利，也是義務。'],
+      ['國小五年級的小溫想善盡國民的義務，下列哪一種行動最適合她？', ['每天準時上學', '申報所得稅', '入伍服兵役', '購買彩券'], 0, '小學生最能做到的是受國民教育的義務。'],
+      ['關於納稅，下列哪一項敘述錯誤？', ['年滿三十二歲才需要納稅', '稅金可用來興建學校', '稅金可用來興建公路', '稅金可用來維護國家安全'], 0, '有收入、消費等符合法律規定的人都要依法納稅，和是否滿三十二歲無關。'],
+      ['國民繳稅時，是依據什麼原則？', ['依照相關法律計算', '自己決定金額', '抽籤決定', '每人繳一樣多'], 0, '納稅金額依法律規定計算，以求公平。'],
+      ['姊姊到就業服務站尋求工作協助，政府設置就業服務站是保障人民的哪一種權利？', ['受益權', '參政權', '自由權', '平等權'], 0, '人民可以要求政府提供服務與幫助，屬於受益權。'],
+      ['直轄市長候選人須年滿30歲。張先生參選臺北市長，他的年齡可能是幾歲？', ['34歲', '20歲', '23歲', '28歲'], 0, '必須年滿30歲才能被選為直轄市長。'],
+    ]},
+    { id: 'S2', title: '第二單元 地形與氣候', qs: [
+      ['臺灣的地形以哪一種為主？', ['山地', '平原', '沙漠', '高原'], 0, '臺灣山地與丘陵約占全島面積三分之二。'],
+      ['臺灣最高的山峰是哪一座？', ['玉山', '雪山', '阿里山', '合歡山'], 0, '玉山主峰海拔約3952公尺，是臺灣最高峰。'],
+      ['臺灣面積最大的平原是哪一個？', ['嘉南平原', '屏東平原', '宜蘭平原', '臺北平原'], 0, '嘉南平原是臺灣最大的平原，也是重要的農業區。'],
+      ['下列哪一座山脈位在臺灣東部，靠近太平洋？', ['海岸山脈', '雪山山脈', '阿里山山脈', '玉山山脈'], 0, '海岸山脈位在花東縱谷東側、緊鄰太平洋。'],
+      ['四周高、中間低平的地形稱為什麼？例如臺北的地形。', ['盆地', '平原', '台地', '丘陵'], 0, '臺北盆地四周有山，中間低平。'],
+      ['臺灣的河川大多有什麼特色？', ['短而流急', '長而平緩', '全年水量都一樣', '大多由西向東流入太平洋'], 0, '臺灣中央山脈高聳、島嶼狹長，河川短促、坡陡流急。'],
+      ['臺灣最長的河川是哪一條？', ['濁水溪', '淡水河', '高屏溪', '大甲溪'], 0, '濁水溪全長約186公里，是臺灣最長的河川。'],
+      ['因為平原地勢平坦，人們在平原上最常發展什麼？', ['農業與城市聚落', '高山茶園', '遠洋漁業', '登山步道'], 0, '平原交通方便、適合耕作，人口與城市多集中在平原。'],
+      ['冬季時，臺灣主要吹哪一種季風？', ['東北季風', '西南季風', '東南季風', '西北季風'], 0, '冬季吹東北季風，夏季吹西南季風。'],
+      ['基隆被稱為「雨港」，主要是因為哪一個原因？', ['冬季東北季風帶來大量雨水', '夏季颱風最多', '地勢太高', '附近有沙漠'], 0, '東北季風吹過海面帶來水氣，迎風的北部、東北部冬季多雨。'],
+      ['每年五、六月，臺灣常出現連續多日的降雨，稱為什麼？', ['梅雨', '颱風', '寒流', '午後雷陣雨'], 0, '梅雨季在春夏之交，為臺灣帶來重要水源。'],
+      ['颱風最常在哪個季節侵襲臺灣？', ['夏季到秋季', '冬季', '春季初', '全年平均'], 0, '颱風多發生在夏、秋兩季。'],
+      ['北回歸線以南的臺灣地區，屬於哪一種氣候？', ['熱帶季風氣候', '副熱帶季風氣候', '溫帶大陸性氣候', '寒帶氣候'], 0, '北回歸線以南屬熱帶季風氣候，以北屬副熱帶季風氣候。'],
+    ]},
+    { id: 'S3', title: '第三單元 史前人類與原住民族', qs: [
+      ['臺東縣長濱鄉的八仙洞遺址，屬於哪一個時代？', ['舊石器時代', '新石器時代', '金屬器時代', '大航海時代'], 0, '八仙洞是長濱文化遺址，屬於舊石器時代。'],
+      ['新北市八里區的十三行遺址，屬於哪一個時代？', ['金屬器時代', '舊石器時代', '新石器時代', '鄭氏時期'], 0, '十三行文化會煉鐵，屬金屬器時代。'],
+      ['臺東縣的卑南文化遺址，以出土大量哪一種物品聞名？', ['石板棺與玉器', '鐵器與錢幣', '瓷器與絲綢', '槍砲'], 0, '卑南遺址出土大量石板棺和精美玉器。'],
+      ['從舊石器時代進入新石器時代，臺灣先民的生活有什麼改變？', ['從採集狩獵發展出農業', '從農業回到狩獵', '開始使用電力', '開始搭船去歐洲'], 0, '新石器時代先民開始種植作物、磨製石器、定居生活。'],
+      ['如果搭時光機到臺灣的史前時代，哪一個場景「不可能」發生？', ['人們用新港文字在石壁刻畫', '人們用火煮熟食物', '人們用石棺埋葬親人', '婦女配戴玉質耳飾'], 0, '新港文字是荷蘭時期才出現的羅馬拼音文字。'],
+      ['我們應該用什麼態度對待文化遺址？', ['政府立法，妥善維護與保存', '把文物賣給外國', '全部拆掉蓋大樓', '和小學生無關'], 0, '文化遺址是全民的資產，應加以保存。'],
+      ['擁有造型獨特的「拼板舟」，並舉行飛魚祭的是哪一族？', ['達悟族（雅美族）', '泰雅族', '布農族', '鄒族'], 0, '達悟族住在蘭嶼，以拼板舟捕撈飛魚。'],
+      ['以「八部合音」祈求小米豐收聞名的是哪一族？', ['布農族', '鄒族', '排灣族', '阿美族'], 0, '八部合音（祈禱小米豐收歌）是布農族的文化特色。'],
+      ['將色彩鮮豔的琉璃珠當成傳家之寶的是哪一族？', ['排灣族', '賽夏族', '達悟族', '泰雅族'], 0, '排灣族重視琉璃珠，每種珠子都有不同的意義。'],
+      ['祭典中使用獨特樂器「臀鈴」，舉行矮靈祭的是哪一族？', ['賽夏族', '卑南族', '布農族', '鄒族'], 0, '賽夏族在矮靈祭中把臀鈴繫在腰後，隨舞步發出聲音。'],
+      ['阿美族與卑南族的傳統社會有什麼共同特色？', ['母系社會，家中由女性當家', '只住在高山上', '以捕捉飛魚為主', '使用拼板舟'], 0, '兩族都是典型的母系社會，財產多由母親傳給女兒。'],
+      ['原住民族製作樂器時多以竹子、木頭為材料，主要原因是什麼？', ['直接從生活周遭取材', '竹木比較昂貴', '竹木製樂器不會壞', '受到歐洲影響'], 0, '原住民族就地取材，反映與自然環境共存的智慧。'],
+      ['關於原住民族祭典文化，下列敘述何者正確？', ['多透過歌舞表達對神靈的崇敬', '舉辦祭典只是為了吸引觀光客', '各族祭典都一模一樣', '祭典時族人都不能參加'], 0, '祭典是信仰與生活的重要部分，常以歌舞表達敬意。'],
+      ['目前政府正式認定的臺灣原住民族共有幾族？', ['16族', '9族', '12族', '20族'], 0, '目前政府核定的原住民族共16族。'],
+    ]},
+    { id: 'S4', title: '第四單元 大航海時代的臺灣', qs: [
+      ['大航海時代，葡萄牙水手稱臺灣為什麼？', ['福爾摩沙（美麗之島）', '東寧', '大員', '雞籠'], 0, 'Ilha Formosa 意思是美麗之島。'],
+      ['荷蘭人千里迢迢來到臺灣，最主要的原因是什麼？', ['為了賺取商業利益', '為了觀光旅遊', '為了和西班牙比賽', '為了捕捉臺灣黑熊'], 0, '荷蘭東印度公司想以臺灣作為貿易據點，賺取利益。'],
+      ['荷蘭人統治臺灣的主要據點在哪裡？', ['臺南一帶', '基隆一帶', '澎湖一帶', '宜蘭一帶'], 0, '荷蘭人在臺南建熱蘭遮城與普羅民遮城。'],
+      ['西班牙人曾在臺灣哪一個地區建立據點？', ['北部的基隆、淡水', '南部的屏東', '東部的花蓮', '中部的彰化'], 0, '西班牙人在基隆、淡水建城，後來被荷蘭人趕走。'],
+      ['荷蘭人在臺南一帶招募漢人開墾，主要種植哪些作物？', ['甘蔗、稻米', '小麥、大麥', '茶葉、樟腦', '高粱、大豆'], 0, '荷蘭人招募漢人種植甘蔗和稻米，蔗糖可外銷賺錢。'],
+      ['荷蘭人統治期間，對臺灣最大的貢獻是什麼？', ['使臺灣成為國際貿易的重要據點', '使臺灣全島信奉基督教', '提升原住民族的地位', '使臺灣成為軍事基地'], 0, '荷蘭人以臺灣進行轉口貿易，讓臺灣登上世界舞臺。'],
+      ['荷蘭人教原住民用羅馬拼音書寫自己的語言，稱為「新港文」，主要目的是什麼？', ['傳播基督教', '宣揚佛教', '讓原住民學荷蘭語', '方便打仗'], 0, '傳教士用羅馬拼音翻譯經文，以傳播基督教。'],
+      ['下列哪一項是荷蘭人在臺灣實施的措施？', ['引進黃牛幫助耕作', '設立孔廟', '舉辦科舉考試', '實施屯田制'], 0, '荷蘭人引進黃牛；孔廟、考試、屯田都是鄭氏時期的措施。'],
+      ['鄭成功渡海來臺的主要原因是什麼？', ['取得反清復明的基地', '占據海外、自立為王', '搶奪商船', '開發礦產獲利'], 0, '鄭成功想以臺灣作為反清復明的基地。'],
+      ['鄭氏時期將軍隊分散各地開墾荒地（屯田），主要目的是什麼？', ['解決軍民糧食不足的問題', '提升人民知識', '幫原住民賺錢', '鎮壓反抗'], 0, '屯田讓士兵平時耕作，解決糧食問題。'],
+      ['鄭氏時期，陳永華建立孔廟、設立學校，這對臺灣的影響是什麼？', ['把漢人的教育與文化帶入臺灣', '讓臺灣人都說荷蘭語', '引進黃牛', '發展鹿皮貿易'], 0, '陳永華推廣儒家教育，被譽為「全臺首學」的臺南孔廟就此建立。'],
+      ['到臺南看到「全臺首學」四個大字，他們應該在哪裡？', ['孔廟', '赤崁樓', '安平古堡', '億載金城'], 0, '臺南孔廟是臺灣第一座孔廟，被稱為全臺首學。'],
+      ['鄭氏政權用什麼方式選拔人才？', ['利用考試制度選取', '任命富家子弟', '從中國選派', '抽籤決定'], 0, '鄭氏時期設立考試制度，選拔人才為國家效力。'],
+      ['西元1683年，清朝派誰率軍攻打臺灣，使鄭氏政權結束？', ['施琅', '鄭成功', '陳永華', '鄭芝龍'], 0, '施琅攻下澎湖，鄭克塽投降，臺灣納入清朝版圖。'],
+      ['「年輕時我跟隨李旦學習做生意，到日本平戶娶了日本女子……」說這段話的最可能是誰？', ['鄭芝龍', '鄭成功', '鄭經', '鄭克塽'], 0, '鄭芝龍是鄭成功的父親，鄭成功出生於日本平戶。'],
+      ['下列哪一個事件最早發生？', ['荷蘭人、西班牙人陸續來臺', '鄭成功以臺灣為反清基地', '陳永華設立學校', '施琅攻打臺灣'], 0, '順序：荷西來臺→鄭成功來臺→陳永華興學→施琅攻臺。'],
+      ['荷蘭時期，臺灣把哪一項商品大量賣到日本？', ['鹿皮', '汽車', '茶葉', '咖啡'], 0, '當時臺灣梅花鹿多，鹿皮大量外銷日本。'],
+    ]},
+  ]
+};
+
+</script>
+<!-- ===== 題庫：zhuyin.js ===== -->
+<script>
+/* 注音模式：使用「注音粉圓」字型（Bpmf Huninn，SIL OFL 授權）在國字旁顯示注音。
+ * 破音字：字型預設顯示最常用的讀音；下面的詞庫會在需要時加上「異體字選擇器」（IVS），
+ * 讓字型改顯示正確的讀音。數字代表字型中的第幾個替代讀音，d 代表維持預設讀音。
+ */
+(function () {
+  'use strict';
+  var WORDS = [
+    // 行 1=ㄏㄤˊ
+    '銀行1 行1列 排行1 行1業 內行1 外行1 行1情 一行1 兩行1 行1距 商行1 車行1 同行1 行1號',
+    // 長 1=ㄓㄤˇ
+    '長1大 成長1 生長1 校長1 班長1 家長1 長1輩 首長1 部長1 市長1 縣長1 長1官 年長1 長1老 族長1 船長1 隊長1 院長1 局長1 店長1 組長1 會長1 社長1 酋長1 鎮長1 里長1 村長1 鄉長1 增長1 長1出 長1高 長1成 助長1 長1子 長1女 兄長1 師長1 學長1 長1相 長1進 長1得 長1滿 長1了 生長1',
+    // 樂 1=ㄩㄝˋ
+    '音樂1 樂1器 樂1團 樂1曲 樂1譜 樂1隊 樂1章 樂1手 國樂1 管樂1 器樂1 樂1師 樂1音 聲樂1 弦樂1 打擊樂1',
+    // 重 1=ㄔㄨㄥˊ
+    '重1新 重1複 重1來 重1做 重1疊 重1逢 重1返 重1建 重1播 重1寫 重1讀 重1組 重1陽 雙重1 重1重1 重1整 重1申 重1演 重1溫',
+    // 還 1=ㄏㄨㄢˊ
+    '還1書 歸還1 還1錢 還1給 償還1 還1原 還1手 還1擊 奉還1 退還1 送還1 還1鄉 生還1 交還1',
+    // 為 1=ㄨㄟˋ
+    '因為1 為1了 為1什麼 為1何 為1此 為1國 為1民 為1你 為1我 為1他 為1她 為1誰 為1大家 為1別人 為1自己 為1妻子 為1丈夫',
+    // 的 1=ㄉㄧˊ 2=ㄉㄧˋ
+    '的1確 目的2 標的2',
+    // 了 1=ㄌㄧㄠˇ
+    '了1解 了1不起 了1不得 受不了1 了1然 明了1 不了1了 吃不了1 免不了1 少不了1 走不了1 跑不了1 不得了1 終了1 了1結 了1事 做不了1 去不了1 忘不了1',
+    // 著 1=ㄓㄨˋ 3=ㄓㄠˊ 4=ㄓㄨㄛˊ
+    '著1名 著1作 顯著1 名著1 著1稱 著1述 著3急 著3火 睡著3 著3涼 著3迷 找不著3 用不著3 犯不著3 著4陸 沉著4 執著4 著4手 著4重 著4想 衣著4',
+    // 都：預設改讀ㄉㄡ，下列詞讀ㄉㄨ
+    '首都d 都d市 都d會 古都d 京都d 成都d 國都d 都d城 建都d 定都d',
+    // 少 1=ㄕㄠˋ
+    '少1年 少1女 少1爺 少1婦 青少1年 少1將 少1校 少1林',
+    // 種 1=ㄓㄨㄥˋ（先列「這種、一種…」避免誤判「這種植物」）
+    '這種d 那種d 哪種d 一種d 兩種d 三種d 四種d 五種d 幾種d 多種d 各種d 某種d 每種d 種d類 品種d 物種d 人種d 種d子 播種d 種d族 同種d 火種d 菜種d 樹種d 稻種d 變種d 雜種d 特種d 種1植 種1樹 種1田 種1花 種1菜 種1稻 種1地 種1下 種1瓜 種1豆 種1甘蔗 栽種1 耕種1 種1出 種1了',
+    // 處 1=ㄔㄨˋ
+    '到處1 處1處1 好處1 壞處1 長處1 短處1 用處1 益處1 住處1 深處1 高處1 遠處1 近處1 四處1 各處1 何處1 去處1 處1所 辦事處1 低處1 此處1 原處1 相同之處1 不同之處1 之處1',
+    // 調 1=ㄉㄧㄠˋ
+    '調1查 聲調1 音調1 曲調1 腔調1 單調1 語調1 步調1 論調1 調1動 情調1 格調1 色調1 強調1 調1度 調1派 基調1',
+    // 傳 1=ㄓㄨㄢˋ
+    '傳1記 自傳1 經傳1 列傳1 外傳1 水滸傳1 左傳1',
+    // 中 1=ㄓㄨㄥˋ
+    '中1獎 打中1 射中1 看中1 猜中1 考中1 命中1 中1暑 中1毒 中1彈 中1選 擊中1 選中1 中1意 中1計 中1風',
+    // 便 1=ㄆㄧㄢˊ
+    '便1宜',
+    // 好 1=ㄏㄠˋ
+    '愛好1 好1奇 好1學 喜好1 嗜好1 好1客 好1動 好1勝 好1高騖遠 好1逸惡勞 好1吃懶做 好1管閒事 好1強',
+    // 數 1=ㄕㄨˇ
+    '數1一數 數1數 數1到 數1著 數1不清 數1不盡 數1錢 數1星星 數1了 屈指可數1 數1落 數1一 數1得',
+    // 降 1=ㄒㄧㄤˊ
+    '投降1 降1服 降1伏 歸降1 招降1 勸降1 受降1',
+    // 曲 1=ㄑㄩ
+    '彎曲1 曲1折 曲1線 委曲1 歪曲1 扭曲1 彎彎曲1曲1 曲1直 曲1尺',
+    // 背 1=ㄅㄟ
+    '背1書包 背1著 背1包 背1負 背1起 背1行李 背1孩子 背1黑鍋',
+    // 分 1=ㄈㄣˋ
+    '部分1 成分1 身分1 本分1 分1量 過分1 水分1 養分1 鹽分1 糖分1 天分1 緣分1 名分1 安分1 分1外 分1內',
+    // 會 1=ㄎㄨㄞˋ 2=ㄏㄨㄟˇ
+    '會1計 一會2兒 等會2兒',
+    // 教 1=ㄐㄧㄠ
+    '教1書 教1我 教1你 教1他 教1她 教1我們 教1大家 教1人 教1孩子 教1小朋友 教1學生 教1同學',
+    // 量 1=ㄌㄧㄤˊ
+    '測量1 量1體溫 量1身高 量1一量1 丈量1 量1角器 量1尺寸 量1杯 量1筒 估量1 打量1 衡量1 量1出 量1了',
+    // 相 1=ㄒㄧㄤˋ
+    '照相1 相1片 相1機 長相1 首相1 宰相1 真相1 相1貌 面相1 丞相1 亮相1',
+    // 應 1=ㄧㄥˋ
+    '反應1 回應1 適應1 效應1 應1用 應1對 供應1 對應1 感應1 呼應1 響應1 應1徵 應1變 應1答 順應1 因應1 報應1 答1應1',
+    // 當 1=ㄉㄤˋ
+    '恰當1 適當1 妥當1 上當1 當1作 當1成 當1做 當1真 當1鋪 穩當1 典當1',
+    // 間 1=ㄐㄧㄢˋ
+    '間1隔 間1斷 間1接 離間1 間1諜 間1歇 間1隙',
+    // 看 1=ㄎㄢ
+    '看1守 看1門 看1家 看1管 看1護 看1顧',
+    // 差 1=ㄔㄞ 2=ㄘ
+    '出差1 差1事 郵差1 差1遣 差1使 參2差2',
+    // 空 1=ㄎㄨㄥˋ
+    '空1白 空1閒 空1格 有空1 沒空1 空1地 空1位 空1隙 填空1 抽空1 空1缺 空1檔',
+    // 正 1=ㄓㄥ
+    '正1月',
+    // 興 1=ㄒㄧㄥˋ
+    '高興1 興1趣 興1致 掃興1 盡興1 即興1 敗興1 雅興1 助興1 興1高采烈 興1沖沖',
+    // 假 1=ㄐㄧㄚˋ
+    '放假1 假1期 假1日 請假1 寒假1 暑假1 休假1 假1單 春假1 連假1 度假1 例假1',
+    // 參 1=ㄕㄣ
+    '人參1 海參1',
+    // 省 1=ㄒㄧㄥˇ
+    '反省1 省1思 省1悟 不省1人事 自省1 省1察 內省1',
+    // 角 1=ㄐㄩㄝˊ
+    '角1色 主角1 配角1 角1逐 口角1 丑角1',
+    // 乾 1=ㄑㄧㄢˊ
+    '乾1坤 乾1隆',
+    // 盛 1=ㄕㄥˋ
+    '盛1大 茂盛1 豐盛1 旺盛1 興盛1 盛1行 強盛1 盛1開 盛1況 盛1產 盛1會 鼎盛1 全盛1 繁盛1 昌盛1 盛1名 盛1夏',
+    // 塞 1=ㄙㄜˋ 2=ㄙㄞˋ
+    '堵塞1 阻塞1 閉塞1 充塞1 茅塞1頓開 邊塞2 要塞2 塞2外 關塞2',
+    // 藏 1=ㄗㄤˋ
+    '西藏1 寶藏1 藏1族 三藏1',
+    // 給 1=ㄐㄧˇ
+    '供給1 補給1 給1予 自給1自足 配給1 給1付',
+    // 薄 1=ㄅㄛˋ
+    '薄1荷',
+    // 結 1=ㄐㄧㄝ
+    '結1實 結1巴',
+    // 覺 1=ㄐㄧㄠˋ
+    '睡覺1 午覺1 一覺1',
+    // 朝 1=ㄓㄠ
+    '朝1陽 朝1氣 朝1夕 朝1露 今朝1 朝1三暮四 一朝1一夕',
+    // 將 1=ㄐㄧㄤˋ
+    '將1領 將1軍 大將1 少1將1 中將1 上將1 名將1 武將1 主將1 猛將1 將1士 將1帥 守將1 老將1',
+    // 要 1=ㄧㄠ
+    '要1求 要1脅 要1挾',
+    // 更 1=ㄍㄥ
+    '更1新 更1改 更1換 變更1 更1正 更1衣 更1替 自力更1生 打更1 三更1 五更1 更1動 更1名',
+    // 強 1=ㄑㄧㄤˇ 2=ㄐㄧㄤˋ
+    '勉強1 強1迫 強1求 強1辯 牽強1 強1人所難 倔強2',
+    // 露 1=ㄌㄡˋ
+    '露1臉 露1面 露1一手 露1餡 露1馬腳',
+    // 奇 1=ㄐㄧ
+    '奇1數',
+    // 沒 1=ㄇㄛˋ
+    '沉沒1 淹沒1 埋沒1 出沒1 隱沒1 沒1收 覆沒1 吞沒1 神出鬼沒1 沒1落',
+    // 散 1=ㄙㄢˇ
+    '散1文 鬆散1 懶散1 散1漫 零散1 散1裝',
+    // 倒 1=ㄉㄠˇ
+    '倒1下 跌倒1 摔倒1 打倒1 倒1閉 推倒1 絆倒1 昏倒1 倒1塌 病倒1 倒1地 撞倒1 壓倒1 顛倒1 倒1楣 臥倒1 滑倒1',
+    // 轉 1=ㄓㄨㄢˋ
+    '轉1動 旋轉1 轉1圈 打轉1 自轉1 公轉1 團團轉1 轉1盤 轉1速 運轉1 迴轉1 空轉1 轉1來轉1去',
+    // 載 1=ㄗㄞˇ
+    '記載1 刊載1 登載1 轉載1 千載1難逢 一年半載1 連載1',
+    // 吐 1=ㄊㄨˋ
+    '嘔吐1',
+    // 難 1=ㄋㄢˋ
+    '災難1 苦難1 難1民 遇難1 患難1 避難1 逃難1 落難1 責難1 刁難1 受難1 罹難1 劫難1 空難1 海難1',
+    // 切 1=ㄑㄧㄝˋ
+    '一切1 切1實 親切1 急切1 迫切1 確切1 密切1 熱切1 關切1 懇切1 貼切1 切1記 切1勿 殷切1 切1身 真切1',
+    // 供 1=ㄍㄨㄥˋ
+    '口供1 供1品 供1奉 上供1 供1桌',
+    // 劃 1=ㄏㄨㄚˊ
+    '劃1船 劃1火柴 劃1破 劃1開 劃1傷 劃1過',
+    // 冠 1=ㄍㄨㄢˋ
+    '冠1軍 奪冠1 冠1名',
+    // 縫 1=ㄈㄥˋ
+    '縫1隙 裂縫1 門縫1 細縫1 牆縫1 天衣無縫1 見縫1插針 石縫1',
+    // 其他
+    '擔1子 重擔1 擔1仔麵 扁擔1 大1夫 喝1采 喝1止 恐嚇1 削1減 剝削1 鮮1少 鮮1為人知 漂1流 漂1浮 漂2白 率1領 率1先 坦率1 輕率1 直率1 草率1 表率1 統率1 埋1怨 號1叫 哀號1 呼號1 鐵騎1 標識1 旋1風 悶1悶不樂 苦悶1 煩悶1 納悶1 沉悶1 鬱悶1 挑1選 挑1水 挑1食 挑1剔 挑1擔 挑1出 挑1起 累1積 積累1 日積月累1 累1計 提1防 對稱1 相稱1 稱1職 稱1心 匀稱1 彈1簧 彈1琴 彈1性 彈1奏 彈1跳 彈1力 彈1開 反彈1 彈1指 彈1簧秤 豬圈1 羊圈1 繫1鞋帶 繫1上 哽咽1 可汗1'
+  ].join(' ');
+
+  var DICT = {}, MAXLEN = 1;
+  WORDS.split(/\s+/).forEach(function (tok) {
+    if (!tok) return;
+    var chars = [], marks = [];
+    for (var i = 0; i < tok.length; i++) {
+      var c = tok[i];
+      if (/[0-9d]/.test(c)) { marks[chars.length - 1] = c; continue; }
+      chars.push(c);
+    }
+    var w = chars.join('');
+    DICT[w] = marks;
+    if (w.length > MAXLEN) MAXLEN = w.length;
+  });
+  // 預設讀音就要換掉的字（字型預設 → 改用替代讀音）
+  var DEFAULT_ALT = { '都': '1' };
+  var VS = function (n) { return String.fromCodePoint(0xE01E0 + n); };
+
+  function annotate(str) {
+    if (!str || !/[一-鿿]/.test(str)) return str;
+    var out = '', i = 0, n = str.length;
+    while (i < n) {
+      var c = str[i];
+      // 已處理過（後面已有 IVS）就跳過
+      if (str.codePointAt(i + 1) >= 0xE0100 && str.codePointAt(i + 1) <= 0xE01EF) { out += c + str.substr(i + 1, 2); i += 3; continue; }
+      var matched = false;
+      for (var L = Math.min(MAXLEN, n - i); L >= 2; L--) {
+        var w = str.substr(i, L);
+        var m = DICT[w];
+        if (m) {
+          for (var k = 0; k < L; k++) {
+            out += w[k];
+            var mk = m[k];
+            if (mk && mk !== 'd') out += VS(+mk);
+            else if (!mk && DEFAULT_ALT[w[k]]) out += VS(+DEFAULT_ALT[w[k]]);
+          }
+          i += L; matched = true; break;
+        }
+      }
+      if (matched) continue;
+      if (c === '得') {
+        // 得到、獲得、值得……讀ㄉㄜˊ；動詞後的「得」多讀˙ㄉㄜ
+        var prev = str[i - 1] || '', next = str[i + 1] || '';
+        var de2 = /[到分意獎知勝失逞宜體當罪力救]/.test(next) || /[獲取值難心贏習自不所]/.test(prev);
+        out += c + (de2 || !prev || !/[一-鿿]/.test(prev) ? '' : VS(1));
+      } else if (c === '地') {
+        // 「慢慢地」「開心地」：前面是疊字或形容詞時讀˙ㄉㄜ
+        var p1 = str[i - 1] || '', p2 = str[i - 2] || '';
+        var nx = str[i + 1] || '';
+        var de = (p1 && p1 === p2) || (/[心興真力細聲靜然氣意快]/.test(p1) && !/[方區球面上下底點圖形震理位址主]/.test(nx));
+        out += c + (de ? VS(1) : '');
+      } else if (DEFAULT_ALT[c]) {
+        out += c + VS(+DEFAULT_ALT[c]);
+      } else {
+        out += c;
+      }
+      i++;
+    }
+    return out;
+  }
+
+  /* ---------- 套用到畫面 ---------- */
+  var on = false;
+  var SKIP = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, INPUT: 1, SELECT: 1, OPTION: 1, CODE: 1, TITLE: 1 };
+  function walk(root) {
+    if (!on || !root) return;
+    var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        for (var p = n.parentNode; p && p !== root.parentNode; p = p.parentNode) {
+          if (SKIP[p.nodeName] || (p.classList && p.classList.contains('no-zy'))) return NodeFilter.FILTER_REJECT;
+        }
+        return n.__zy === n.nodeValue ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var list = [], node;
+    while ((node = tw.nextNode())) list.push(node);
+    list.forEach(function (t) { var v = annotate(t.nodeValue); if (v !== t.nodeValue) t.nodeValue = v; t.__zy = t.nodeValue; });
+  }
+  var pending = false;
+  var observer = new MutationObserver(function () {
+    if (!on || pending) return;
+    pending = true;
+    requestAnimationFrame(function () { pending = false; walk(document.body); });
+  });
+
+  function set(v) {
+    on = !!v;
+    document.documentElement.classList.toggle('zy', on);
+    if (on) { walk(document.body); observer.observe(document.body, { childList: true, subtree: true, characterData: true }); }
+    else observer.disconnect();
+  }
+
+  /* 考讀音的題目：加了注音會洩漏答案，整題改用一般字型 */
+  function revealsAnswer(text) { return /[ㄅ-ㄩˊˇˋ˙]|讀音|怎麼讀|讀作|唸作|念作|注音|拼音/.test(text || ''); }
+
+  window.Zhuyin = { set: set, isOn: function () { return on; }, annotate: annotate, revealsAnswer: revealsAnswer };
+})();
+
+</script>
+<!-- ===== 教師出題工作室 ===== -->
+<script>
+/* 教師出題工作室：上傳 PDF 試卷 → Claude AI 出題 → 存成題庫 → 發布到網站 */
+(function () {
+  'use strict';
+  var MODEL = 'claude-opus-5-5';
+  var KEY_STORE = 'islands.studio.apikey';
+  var GH_STORE = 'islands.studio.github';
+  var draft = null;      // 剛產生、還沒加入題庫的題目
+  var busy = false;
+
+  function $(id) { return document.getElementById(id); }
+  function A() { return window.IslandApp; }
+  function esc(s) { return A().esc(s); }
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  var sessionKey = '';
+  function apiKey() { return sessionKey || lsGet(KEY_STORE) || ''; }
+
+  function ghDefaults() {
+    var saved = {}; try { saved = JSON.parse(lsGet(GH_STORE) || '{}'); } catch (e) {}
+    var owner = saved.owner || '', repo = saved.repo || '';
+    if (!owner && /\.github\.io$/.test(location.hostname)) {
+      owner = location.hostname.split('.')[0];
+      repo = location.pathname.split('/')[1] || (owner + '.github.io');
+    }
+    return { owner: owner, repo: repo, branch: saved.branch || 'main', token: saved.token || '' };
+  }
+
+  /* ---------- 畫面 ---------- */
+  function render() {
+    var v = $('view-studio');
+    var app = A(), gk = app.currentGrade();
+    var gradeOpts = app.GRADES.map(function (g) { return '<option value="' + g.key + '"' + (g.key === gk ? ' selected' : '') + '>' + g.label + '</option>'; }).join('');
+    var subjOpts = app.SUBJECTS.map(function (s) { return '<option value="' + s.key + '">' + s.name + '</option>'; }).join('');
+    var gh = ghDefaults();
+    var hasKey = !!apiKey();
+    v.innerHTML =
+      '<div class="subject-head"><a class="back" href="#home">← 回群島</a><div class="subject-title"><p class="eyebrow">教師專用</p><h1>出題工作室</h1></div></div>' +
+      '<div class="studio">' +
+
+      '<section class="panel"><h2>1. AI 金鑰</h2>' +
+      '<p class="hint">出題使用 Anthropic 的 Claude AI，需要你自己的 API 金鑰（到 <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a> 申請並儲值）。金鑰只存在這台電腦的瀏覽器裡，不會寫進網站檔案，學生也看不到。</p>' +
+      '<div class="field"><label for="stKey">API 金鑰</label><input id="stKey" type="password" autocomplete="off" placeholder="sk-ant-…" value="' + (hasKey ? '••••••••（已設定）' : '') + '"></div>' +
+      '<label class="check"><input type="checkbox" id="stRemember"' + (lsGet(KEY_STORE) ? ' checked' : '') + '> 記住在這台電腦（公用電腦請不要勾）</label>' +
+      '<div class="row"><button class="btn" type="button" id="stKeySave">儲存金鑰</button><button class="btn" type="button" id="stKeyClear">清除金鑰</button></div>' +
+      '<p class="hint">費用參考：一份 2～4 頁的試卷出 20～30 題，大約 0.2～0.5 美元（約新臺幣 6～15 元），直接從你的 Anthropic 帳戶扣款。</p>' +
+      '</section>' +
+
+      '<section class="panel"><h2>2. 上傳試卷，AI 出題</h2>' +
+      '<div class="grid2">' +
+      '<div class="field"><label for="stGrade">年級</label><select id="stGrade">' + gradeOpts + '</select></div>' +
+      '<div class="field"><label for="stSubj">科目（放進哪座島）</label><select id="stSubj">' + subjOpts + '</select></div>' +
+      '</div>' +
+      '<div class="field"><label for="stTitle">關卡名稱（學生會看到）</label><input id="stTitle" maxlength="40" placeholder="例如：第三單元 水溶液 段考複習"></div>' +
+      '<div class="field"><label for="stPdf">試卷 PDF（30 MB 以內）</label><input id="stPdf" type="file" accept="application/pdf,.pdf"></div>' +
+      '<div class="grid2">' +
+      '<div class="field"><label for="stN">題數</label><input id="stN" type="number" min="5" max="60" step="1" value="20"></div>' +
+      '<div class="field"><label for="stLevel">難度</label><select id="stLevel"><option value="和試卷差不多">和試卷差不多</option><option value="比試卷簡單一些，適合複習基礎">簡單一些</option><option value="比試卷難一些，多一些思考與應用題">難一些</option></select></div>' +
+      '</div>' +
+      '<div class="field"><label for="stExtra">補充要求（可不填）</label><textarea id="stExtra" rows="2" placeholder="例如：多出成語題、不要出看圖題、加入生活應用"></textarea></div>' +
+      '<div class="row"><button class="btn primary" type="button" id="stGo">開始出題</button><span class="status" id="stStatus" role="status"></span></div>' +
+      '</section>' +
+
+      '<section class="panel" id="stDraftPanel" hidden><h2>3. 檢查題目</h2>' +
+      '<p class="hint">請逐題看過，不合適的按「刪除」。確認後按「加入題庫」，學生就能在島上練習。</p>' +
+      '<ol class="draft" id="stDraft"></ol>' +
+      '<div class="row"><button class="btn primary" type="button" id="stAdd">加入題庫</button><button class="btn" type="button" id="stDiscard">全部放棄</button></div>' +
+      '</section>' +
+
+      '<section class="panel"><h2>AI 題庫</h2><div id="stSets"></div>' +
+      '<div class="row"><button class="btn" type="button" id="stExport">匯出題庫檔</button><label class="btn file-btn">匯入題庫檔<input type="file" id="stImport" accept="application/json,.json" hidden></label></div>' +
+      '</section>' +
+
+      '<section class="panel"><h2>發布到網站（讓所有學生看到）</h2>' +
+      '<p class="hint">「加入題庫」後的題目先存在這台電腦。按下「發布」會把題庫寫進 GitHub repo 的 <code>custom-questions.json</code>，大約 1 分鐘後，學生在任何電腦重新整理網頁就看得到。需要一組只能修改這個 repo 的 GitHub 權杖（Fine-grained token，權限選 Contents：Read and write）。</p>' +
+      '<div class="grid3">' +
+      '<div class="field"><label for="ghOwner">GitHub 帳號</label><input id="ghOwner" value="' + esc(gh.owner) + '"></div>' +
+      '<div class="field"><label for="ghRepo">Repo 名稱</label><input id="ghRepo" value="' + esc(gh.repo) + '"></div>' +
+      '<div class="field"><label for="ghBranch">分支</label><input id="ghBranch" value="' + esc(gh.branch) + '"></div>' +
+      '</div>' +
+      '<div class="field"><label for="ghToken">GitHub 權杖</label><input id="ghToken" type="password" autocomplete="off" placeholder="github_pat_…" value="' + (gh.token ? '••••••••（已設定）' : '') + '"></div>' +
+      '<div class="row"><button class="btn primary" type="button" id="ghPublish">發布到網站</button><span class="status" id="ghStatus" role="status"></span></div>' +
+      '</section>' +
+      '</div>';
+
+    $('stKeySave').onclick = function () {
+      var val = $('stKey').value.trim();
+      if (!val || val.indexOf('•') === 0) { app.toast('請貼上金鑰'); return; }
+      sessionKey = val;
+      lsSet(KEY_STORE, $('stRemember').checked ? val : null);
+      $('stKey').value = '••••••••（已設定）';
+      app.toast($('stRemember').checked ? '金鑰已存在這台電腦' : '金鑰只在這次開啟網頁時有效');
+    };
+    $('stKeyClear').onclick = function () { sessionKey = ''; lsSet(KEY_STORE, null); $('stKey').value = ''; app.toast('已清除金鑰'); };
+    $('stGo').onclick = generate;
+    $('stAdd').onclick = addDraft;
+    $('stDiscard').onclick = function () { draft = null; renderDraft(); };
+    $('stExport').onclick = exportSets;
+    $('stImport').onchange = importSets;
+    $('ghPublish').onclick = publish;
+    renderDraft(); renderSets();
+  }
+
+  function setStatus(id, msg, bad) { var el = $(id); if (!el) return; el.textContent = msg; el.classList.toggle('bad', !!bad); }
+
+  /* ---------- 讀 PDF ---------- */
+  function readB64(file) {
+    return new Promise(function (res, rej) {
+      var r = new FileReader();
+      r.onload = function () { var s = String(r.result); res(s.slice(s.indexOf(',') + 1)); };
+      r.onerror = function () { rej(new Error('讀取 PDF 失敗')); };
+      r.readAsDataURL(file);
+    });
+  }
+
+  /* ---------- 呼叫 Claude ---------- */
+  var SCHEMA = {
+    type: 'object',
+    properties: {
+      questions: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            question: { type: 'string' },
+            options: { type: 'array', items: { type: 'string' } },
+            answer_index: { type: 'integer' },
+            explanation: { type: 'string' }
+          },
+          required: ['question', 'options', 'answer_index', 'explanation'],
+          additionalProperties: false
+        }
+      }
+    },
+    required: ['questions'],
+    additionalProperties: false
+  };
+
+  function buildPrompt(o) {
+    return '附件是一份臺灣國小「' + o.gradeLabel + '」「' + o.subjName + '」的試卷。\n' +
+      '請根據這份試卷涵蓋的單元與學習重點，出 ' + o.n + ' 題四選一的選擇題，讓學生在網站上練習。\n\n' +
+      '要求：\n' +
+      '1. 使用繁體中文與臺灣國小課本的用語，難度：' + o.level + '。\n' +
+      '2. 可以改寫試卷中的題目（包含是非、填空、配合、閱讀題，都改成四選一），也可以在同一單元範圍內延伸出新題，但不要超出這份試卷的單元範圍。\n' +
+      '3. 學生看不到原試卷的圖片或表格，需要看圖的題目請把必要資訊寫進題目文字裡；做不到就不要出。\n' +
+      '4. 每題剛好 4 個選項，只有一個正確答案，選項不要加 A/B/C/D 或 ①② 編號。正確答案的位置要平均分散。\n' +
+      '5. explanation 用一到兩句話說明為什麼這個答案正確，語氣適合國小學生。\n' +
+      '6. 內容必須正確，不確定的知識不要出題。\n' +
+      (o.extra ? '7. 老師的補充要求：' + o.extra + '\n' : '') +
+      '\n請剛好輸出 ' + o.n + ' 題。';
+  }
+
+  function callClaude(key, pdfB64, prompt, onProgress) {
+    var body = {
+      model: MODEL,
+      max_tokens: 32000,
+      stream: true,
+      output_config: { effort: 'medium', format: { type: 'json_schema', schema: SCHEMA } },
+      fallbacks: 'default',
+      system: '你是一位經驗豐富的臺灣國小老師，擅長依照課綱與試卷出題。',
+      messages: [{ role: 'user', content: [
+        { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: pdfB64 } },
+        { type: 'text', text: prompt }
+      ] }]
+    };
+    return fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2026-10-21',
+        'anthropic-beta': 'server-side-fallback-2026-07-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify(body)
+    }).then(function (res) {
+      if (!res.ok) {
+        return res.text().then(function (t) {
+          var msg = ''; try { msg = JSON.parse(t).error.message; } catch (e) { msg = t.slice(0, 200); }
+          var why = res.status === 401 ? '金鑰不正確或已失效' : res.status === 429 ? '請求太頻繁或額度不足，請稍後再試' : res.status === 400 && /credit/i.test(msg) ? 'Anthropic 帳戶餘額不足，請先儲值' : res.status === 413 ? 'PDF 檔案太大' : '';
+          throw new Error((why ? why + '。' : '') + '（' + res.status + ' ' + msg + '）');
+        });
+      }
+      var reader = res.body.getReader(), dec = new TextDecoder(), buf = '', text = '', stop = null, chars = 0;
+      function handle(evt) {
+        if (evt.type === 'content_block_delta' && evt.delta && evt.delta.type === 'text_delta') { text += evt.delta.text; chars += evt.delta.text.length; onProgress(chars); }
+        else if (evt.type === 'message_delta' && evt.delta && evt.delta.stop_reason) stop = evt.delta.stop_reason;
+        else if (evt.type === 'error') throw new Error((evt.error && evt.error.message) || 'AI 服務發生錯誤');
+      }
+      function pump() {
+        return reader.read().then(function (r) {
+          if (r.done) return { text: text, stop: stop };
+          buf += dec.decode(r.value, { stream: true });
+          var lines = buf.split('\n'); buf = lines.pop();
+          lines.forEach(function (line) {
+            if (line.indexOf('data:') !== 0) return;
+            var data = line.slice(5).trim(); if (!data) return;
+            var evt; try { evt = JSON.parse(data); } catch (e) { return; }
+            handle(evt);
+          });
+          return pump();
+        });
+      }
+      return pump();
+    });
+  }
+
+  function clean(list) {
+    var out = [];
+    (list || []).forEach(function (q) {
+      if (!q || typeof q.question !== 'string' || !Array.isArray(q.options)) return;
+      var opts = q.options.map(function (o) { return String(o).replace(/^\s*(?:[A-DＡ-Ｄ][\.、．)]|[①②③④]|\([A-D]\))\s*/, '').trim(); });
+      var ans = q.answer_index;
+      if (opts.length !== 4 || opts.some(function (o) { return !o; }) || !(ans >= 0 && ans <= 3) || Math.floor(ans) !== ans) return;
+      out.push([q.question.trim(), opts, ans, String(q.explanation || '').trim()]);
+    });
+    return out;
+  }
+
+  function generate() {
+    if (busy) return;
+    var app = A(), key = apiKey();
+    if (!key) { setStatus('stStatus', '請先在第 1 步儲存 API 金鑰', true); return; }
+    var file = $('stPdf').files[0];
+    if (!file) { setStatus('stStatus', '請選擇一份 PDF 試卷', true); return; }
+    if (file.size > 30 * 1024 * 1024) { setStatus('stStatus', 'PDF 超過 30 MB，請先壓縮或拆成較小的檔案', true); return; }
+    var n = Math.max(5, Math.min(60, parseInt($('stN').value, 10) || 20));
+    var gradeKey = $('stGrade').value, subjKey = $('stSubj').value;
+    var g = app.GRADES.filter(function (x) { return x.key === gradeKey; })[0];
+    var s = app.SUBJECTS.filter(function (x) { return x.key === subjKey; })[0];
+    var title = $('stTitle').value.trim() || (file.name.replace(/\.pdf$/i, '') + '（AI 出題）');
+    busy = true; $('stGo').disabled = true;
+    setStatus('stStatus', '讀取 PDF 中…');
+    var started = Date.now();
+    readB64(file).then(function (b64) {
+      setStatus('stStatus', 'AI 正在閱讀試卷並出題，大約需要 1～3 分鐘…');
+      return callClaude(key, b64, buildPrompt({ gradeLabel: g.label, subjName: s.name, n: n, level: $('stLevel').value, extra: $('stExtra').value.trim() }), function (chars) {
+        setStatus('stStatus', 'AI 出題中…已寫出約 ' + chars + ' 字（' + Math.round((Date.now() - started) / 1000) + ' 秒）');
+      });
+    }).then(function (r) {
+      if (r.stop === 'refusal') throw new Error('AI 拒絕處理這份檔案，請換一份試卷試試');
+      var data; try { data = JSON.parse(r.text); } catch (e) { throw new Error(r.stop === 'max_tokens' ? '題目太多，回覆被截斷了，請減少題數再試' : 'AI 回傳的格式無法讀取，請再試一次'); }
+      var qs = clean(data.questions);
+      if (!qs.length) throw new Error('沒有產生可用的題目，請確認 PDF 內容清楚可讀');
+      draft = { grade: gradeKey, subj: subjKey, title: title, source: file.name, qs: qs };
+      setStatus('stStatus', '完成！產生 ' + qs.length + ' 題，請在下方檢查。');
+      renderDraft();
+      $('stDraftPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }).catch(function (e) {
+      var msg = e && e.message ? e.message : String(e);
+      if (/Failed to fetch|NetworkError|Load failed/i.test(msg)) msg = '連不上 AI 服務，請檢查網路（學校網路可能封鎖 api.anthropic.com）';
+      setStatus('stStatus', '出題失敗：' + msg, true);
+    }).then(function () { busy = false; var b = $('stGo'); if (b) b.disabled = false; });
+  }
+
+  /* ---------- 草稿 ---------- */
+  function renderDraft() {
+    var panel = $('stDraftPanel'); if (!panel) return;
+    panel.hidden = !draft;
+    if (!draft) return;
+    $('stDraft').innerHTML = draft.qs.map(function (q, i) {
+      return '<li><div class="dq"><p class="dq-q">' + esc(q[0]) + '</p><ol class="dq-opts">' + q[1].map(function (o, k) {
+        return '<li' + (k === q[2] ? ' class="ok"' : '') + '>' + esc(o) + (k === q[2] ? '　✓' : '') + '</li>';
+      }).join('') + '</ol><p class="hint">' + esc(q[3]) + '</p></div><button class="btn small" type="button" data-del="' + i + '">刪除</button></li>';
+    }).join('');
+    $('stDraft').querySelectorAll('[data-del]').forEach(function (b) {
+      b.onclick = function () { draft.qs.splice(+b.dataset.del, 1); if (!draft.qs.length) draft = null; renderDraft(); };
+    });
+    $('stAdd').textContent = '加入題庫（' + draft.qs.length + ' 題）';
+  }
+  function addDraft() {
+    if (!draft) return;
+    var app = A();
+    app.addSet({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), grade: draft.grade, subj: draft.subj, title: draft.title, source: draft.source, created: Date.now(), qs: draft.qs });
+    var s = app.SUBJECTS.filter(function (x) { return x.key === draft.subj; })[0];
+    app.toast('已加入' + s.island + '，記得按「發布到網站」讓學生看到');
+    draft = null; renderDraft(); renderSets();
+  }
+
+  /* ---------- 題庫清單 ---------- */
+  function renderSets() {
+    var app = A(), box = $('stSets'); if (!box) return;
+    var local = {}; app.localSets().forEach(function (s) { local[s.id] = 1; });
+    var sets = app.allSets();
+    if (!sets.length) { box.innerHTML = '<p class="hint">還沒有 AI 題庫。上傳一份試卷開始吧！</p>'; return; }
+    box.innerHTML = '<div class="table-wrap"><table class="log"><thead><tr><th>年級</th><th>科目</th><th>關卡名稱</th><th class="num">題數</th><th>狀態</th><th></th></tr></thead><tbody>' +
+      sets.map(function (s) {
+        var g = app.GRADES.filter(function (x) { return x.key === s.grade; })[0], sj = app.SUBJECTS.filter(function (x) { return x.key === s.subj; })[0];
+        return '<tr><td>' + (g ? g.short : '') + '</td><td><span class="tag" style="--c:' + (sj ? sj.color : 'var(--sea)') + '">' + (sj ? sj.name : '') + '</span></td><td>' + esc(s.title) + '</td><td class="num">' + s.qs.length + '</td><td>' + (local[s.id] ? '<span class="pill warn">尚未發布</span>' : '<span class="pill">已在網站</span>') + '</td><td><button class="btn small" type="button" data-rm="' + esc(s.id) + '">刪除</button></td></tr>';
+      }).join('') + '</tbody></table></div>';
+    box.querySelectorAll('[data-rm]').forEach(function (b) {
+      b.onclick = function () {
+        if (b.dataset.confirm !== '1') { b.dataset.confirm = '1'; b.textContent = '確定刪除？'; return; }
+        app.deleteSet(b.dataset.rm); renderSets(); app.toast('已刪除，按「發布到網站」才會從網站上移除');
+      };
+    });
+  }
+
+  function exportSets() {
+    var data = JSON.stringify({ version: 1, updated: Date.now(), sets: A().allSets() }, null, 1);
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+    a.download = 'custom-questions.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    A().toast('已下載 custom-questions.json');
+  }
+  function importSets(e) {
+    var f = e.target.files[0]; if (!f) return;
+    f.text().then(function (t) {
+      var d = JSON.parse(t); var n = A().importSets(d.sets || []);
+      renderSets(); A().toast('匯入 ' + n + ' 個題庫');
+    }).catch(function () { A().toast('這不是有效的題庫檔'); });
+    e.target.value = '';
+  }
+
+  /* ---------- 發布到 GitHub ---------- */
+  function b64utf8(str) { var bytes = new TextEncoder().encode(str), bin = ''; for (var i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(bin); }
+  function publish() {
+    var app = A(), saved = ghDefaults();
+    var owner = $('ghOwner').value.trim(), repo = $('ghRepo').value.trim(), branch = $('ghBranch').value.trim() || 'main';
+    var tokenIn = $('ghToken').value.trim();
+    var token = tokenIn && tokenIn.indexOf('•') !== 0 ? tokenIn : saved.token;
+    if (!owner || !repo || !token) { setStatus('ghStatus', '請填寫 GitHub 帳號、Repo 名稱和權杖', true); return; }
+    lsSet(GH_STORE, JSON.stringify({ owner: owner, repo: repo, branch: branch, token: token }));
+    $('ghToken').value = '••••••••（已設定）';
+    var sets = app.allSets();
+    var url = 'https://api.github.com/repos/' + encodeURIComponent(owner) + '/' + encodeURIComponent(repo) + '/contents/custom-questions.json';
+    var headers = { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' };
+    $('ghPublish').disabled = true; setStatus('ghStatus', '發布中…');
+    fetch(url + '?ref=' + encodeURIComponent(branch), { headers: headers, cache: 'no-store' })
+      .then(function (r) { if (r.status === 404) return null; if (!r.ok) throw r; return r.json(); })
+      .then(function (cur) {
+        var body = { message: '更新 AI 題庫（' + sets.length + ' 個關卡）', branch: branch, content: b64utf8(JSON.stringify({ version: 1, updated: Date.now(), sets: sets }, null, 1)) };
+        if (cur && cur.sha) body.sha = cur.sha;
+        return fetch(url, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, headers), body: JSON.stringify(body) });
+      })
+      .then(function (r) { if (!r.ok) throw r; return r.json(); })
+      .then(function () {
+        app.setRemote(sets); app.markPublished(); renderSets();
+        setStatus('ghStatus', '已發布！大約 1 分鐘後，學生重新整理網頁就會看到新題目。');
+      })
+      .catch(function (r) {
+        var st = r && r.status;
+        setStatus('ghStatus', '發布失敗：' + (st === 401 ? '權杖不正確或已過期' : st === 403 ? '權杖沒有寫入權限（Contents 要選 Read and write）' : st === 404 ? '找不到這個 repo，請檢查帳號與名稱，以及權杖是否有權限存取它' : st === 409 || st === 422 ? '分支名稱不對或檔案剛被修改，請再按一次' : '請檢查網路後再試') , true);
+      })
+      .then(function () { var b = $('ghPublish'); if (b) b.disabled = false; });
+  }
+
+  window.IslandStudio = { render: render };
+})();
+
+</script>
+<!-- ===== 主程式 ===== -->
+<script>
+/* 數位學習島 主程式（純前端，不需要伺服器） */
+(function () {
+  'use strict';
+
+  /* ---------- 基本資料 ---------- */
+  var SUBJECTS = [
+    { key: 'chinese', name: '國語', island: '國語島', color: 'var(--coral)' },
+    { key: 'science', name: '自然科學', island: '自然島', color: 'var(--leaf)' },
+    { key: 'social',  name: '社會', island: '社會島', color: 'var(--amber)' }
+  ];
+  var NUM = ['一', '二', '三', '四', '五', '六'];
+  var GRADES = [];
+  for (var g = 1; g <= 6; g++) {
+    GRADES.push({ key: 'g' + g + 'a', label: NUM[g - 1] + '年級上學期', short: g + '上' });
+    GRADES.push({ key: 'g' + g + 'b', label: NUM[g - 1] + '年級下學期', short: g + '下' });
+  }
+  var QB = window.QB || {};
+
+  /* 自訂（AI 出題）題庫：本機 + 網站上的 custom-questions.json */
+  var CUSTOM_KEY = 'islands.custom';
+  var custom = (function () { try { var v = JSON.parse(localStorage.getItem(CUSTOM_KEY)); if (v && v.sets) return v; } catch (e) {} return { sets: [], deleted: [] }; })();
+  if (!custom.deleted) custom.deleted = [];
+  var remoteSets = [];
+  function allSets() {
+    var map = {};
+    remoteSets.concat(custom.sets).forEach(function (s) { if (s && s.id && custom.deleted.indexOf(s.id) < 0) map[s.id] = s; });
+    return Object.keys(map).map(function (k) { return map[k]; }).sort(function (a, b) { return (a.created || 0) - (b.created || 0); });
+  }
+  function bank(gradeKey, subjKey) {
+    var base = QB[gradeKey + '-' + subjKey] || null;
+    var extra = allSets().filter(function (s) { return s.grade === gradeKey && s.subj === subjKey && s.qs && s.qs.length; })
+      .map(function (s) { return { id: 'C-' + s.id, title: s.title, ai: true, qs: s.qs }; });
+    if (!base && !extra.length) return null;
+    return { publisher: base ? base.publisher : '自訂題庫', units: (base ? base.units : []).concat(extra) };
+  }
+  function gradeReady(gradeKey) { return SUBJECTS.some(function (s) { return bank(gradeKey, s.key); }); }
+  function gradeInfo(key) { return GRADES.find(function (x) { return x.key === key; }); }
+  function subjInfo(key) { return SUBJECTS.find(function (x) { return x.key === key; }); }
+
+  /* 把題庫整理成有編號的題目 */
+  function questionsOf(gradeKey, subjKey, unitId) {
+    var b = bank(gradeKey, subjKey); if (!b) return [];
+    var out = [];
+    b.units.forEach(function (u) {
+      if (unitId && u.id !== unitId) return;
+      u.qs.forEach(function (q, i) {
+        out.push({ id: gradeKey + '-' + subjKey + '-' + u.id + '-' + i, subj: subjKey, unit: u.title, q: q[0], opts: q[1], ans: q[2], ex: q[3] });
+      });
+    });
+    return out;
+  }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function $(id) { return document.getElementById(id); }
+  function today() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+
+  /* ---------- 學習紀錄（本機 + 雲端） ---------- */
+  function blank() { return { grade: null, name: '', stars: {}, wrong: {}, history: [], daily: {} }; }
+  function lsGet(k) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* 無痕模式等情況 */ } }
+  function normalize(p) { var b = blank(); p = p || {}; Object.keys(b).forEach(function (k) { if (p[k] == null) p[k] = b[k]; }); return p; }
+
+  var user = null;            // Firebase 使用者
+  var storeKey = 'islands.guest';
+  var profile = normalize(lsGet(storeKey));
+  var cloud = null;           // { db }
+  var saveTimer = null;
+
+  function merge(a, b) {
+    a = normalize(a); b = normalize(b);
+    var m = blank();
+    m.grade = a.grade || b.grade;
+    m.name = a.name || b.name;
+    m.stars = Object.assign({}, b.stars, a.stars);
+    m.wrong = Object.assign({}, b.wrong, a.wrong);
+    m.daily = Object.assign({}, b.daily, a.daily);
+    var seen = {}; m.history = [];
+    a.history.concat(b.history).forEach(function (h) { if (!seen[h.id]) { seen[h.id] = 1; m.history.push(h); } });
+    m.history.sort(function (x, y) { return y.t - x.t; });
+    m.history = m.history.slice(0, 500);
+    return m;
+  }
+  function save() {
+    lsSet(storeKey, profile);
+    if (cloud && user) {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(function () {
+        cloud.db.collection('users').doc(user.uid).set(Object.assign({}, profile, {
+          displayName: user.displayName || '', email: user.email || '', updatedAt: Date.now()
+        })).catch(function () { toast('雲端同步失敗，紀錄已先存在這台電腦'); });
+      }, 600);
+    }
+  }
+
+  /* ---------- Firebase（有設定才載入） ---------- */
+  var FB_VER = '10.12.2';
+  var cfg = window.FIREBASE_CONFIG || {};
+  var fbReady = !!(cfg.apiKey && cfg.projectId);
+
+  function loadScript(src) {
+    return new Promise(function (res, rej) { var s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+  }
+  function initFirebase() {
+    if (!fbReady) { renderUserChip(); return; }
+    var base = 'https://www.gstatic.com/firebasejs/' + FB_VER + '/';
+    loadScript(base + 'firebase-app-compat.js')
+      .then(function () { return Promise.all([loadScript(base + 'firebase-auth-compat.js'), loadScript(base + 'firebase-firestore-compat.js')]); })
+      .then(function () {
+        firebase.initializeApp(cfg);
+        cloud = { db: firebase.firestore(), auth: firebase.auth() };
+        cloud.auth.onAuthStateChanged(onAuth);
+      })
+      .catch(function () { fbReady = false; renderUserChip(); toast('無法連線到 Google 登入服務，先以本機模式使用'); });
+  }
+  function onAuth(u) {
+    user = u;
+    if (!u) {
+      storeKey = 'islands.guest';
+      profile = normalize(lsGet(storeKey));
+      renderUserChip(); route(); return;
+    }
+    storeKey = 'islands.user.' + u.uid;
+    var cached = lsGet(storeKey);
+    cloud.db.collection('users').doc(u.uid).get().then(function (snap) {
+      var remote = snap.exists ? snap.data() : null;
+      var guest = lsGet('islands.guest');
+      profile = merge(merge(cached, remote), guest);
+      if (!profile.name) profile.name = u.displayName || '';
+      if (guest && (guest.history || []).length) { lsSet('islands.guest', blank()); toast('已把這台電腦上的紀錄合併到你的帳號'); }
+      save(); renderUserChip(); route();
+      if (!profile.grade) openGrade();
+    }).catch(function () {
+      profile = normalize(cached || profile);
+      renderUserChip(); route();
+      toast('讀取雲端紀錄失敗，請確認 Firestore 規則');
+    });
+  }
+  function signIn() {
+    if (!cloud) return;
+    var provider = new firebase.auth.GoogleAuthProvider();
+    cloud.auth.signInWithPopup(provider).catch(function (e) {
+      if (e && e.code === 'auth/unauthorized-domain') toast('這個網址還沒加入 Firebase 授權網域');
+      else if (e && e.code !== 'auth/popup-closed-by-user') toast('登入沒有成功，請再試一次');
+    });
+  }
+  function signOut() { if (cloud) cloud.auth.signOut(); }
+
+  /* ---------- 小工具 ---------- */
+  var toastTimer;
+  function toast(msg) { var t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2600); }
+  function show(id) { ['home', 'subject', 'quiz', 'result', 'history', 'studio'].forEach(function (v) { $('view-' + v).hidden = v !== id; }); window.scrollTo(0, 0); }
+  function starCount(gradeKey, subjKey, unitId) {
+    var qs = questionsOf(gradeKey, subjKey, unitId); var n = 0;
+    qs.forEach(function (q) { if (profile.stars[q.id]) n++; });
+    return { got: n, max: qs.length };
+  }
+
+  /* ---------- 頂部 ---------- */
+  function renderUserChip() {
+    var chip = $('userChip');
+    if (user) {
+      chip.innerHTML = (user.photoURL ? '<img src="' + esc(user.photoURL) + '" alt="">' : '') + '<span>' + esc(profile.name || user.displayName || '我的帳號') + '</span>';
+    } else {
+      chip.innerHTML = fbReady ? '<span>Google 登入</span>' : '<span>' + esc(profile.name || '訪客') + '・本機</span>';
+    }
+    var gi = gradeInfo(profile.grade);
+    $('gradeChip').textContent = gi ? gi.label : '選擇年級';
+    applyZhuyin();
+  }
+
+  /* ---------- 注音模式 ---------- */
+  // 一、二年級預設開啟；按過開關之後，依照使用者的選擇
+  function zyPref() { try { return localStorage.getItem('islands.zhuyin'); } catch (e) { return null; } }
+  function zyWanted() { var p = zyPref(); if (p === 'on') return true; if (p === 'off') return false; return /^g[12]/.test(profile.grade || ''); }
+  function applyZhuyin() {
+    if (!window.Zhuyin) return;
+    var want = zyWanted();
+    if (want !== window.Zhuyin.isOn()) window.Zhuyin.set(want);
+    var c = $('zyChip'); c.setAttribute('aria-pressed', want ? 'true' : 'false'); c.textContent = want ? '注音：開' : '注音：關';
+  }
+  $('zyChip').onclick = function () {
+    try { localStorage.setItem('islands.zhuyin', zyWanted() ? 'off' : 'on'); } catch (e) {}
+    applyZhuyin();
+    toast(zyWanted() ? '已開啟注音' : '已關閉注音');
+  };
+  function noZy(el, text) { if (el) el.classList.toggle('no-zy', !!(window.Zhuyin && window.Zhuyin.revealsAnswer(text))); }
+
+  /* ---------- 年級選擇 ---------- */
+  function openGrade() {
+    var grid = $('gradeGrid'); grid.innerHTML = '';
+    GRADES.forEach(function (gr) {
+      var ready = gradeReady(gr.key);
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'grade-btn' + (ready ? ' ready' : '') + (profile.grade === gr.key ? ' current' : '');
+      b.innerHTML = '<b>' + gr.label + '</b><small>' + (ready ? '題庫已開放' : '島嶼建造中') + '</small>';
+      b.onclick = function () {
+        profile.grade = gr.key; save(); $('gradeDlg').close(); renderUserChip();
+        toast(ready ? '已加入' + gr.label : gr.label + '的島嶼還在建造中，可以先回五上練習');
+        location.hash = '#home'; route();
+      };
+      grid.appendChild(b);
+    });
+    if (!$('gradeDlg').open) $('gradeDlg').showModal();
+  }
+
+  /* ---------- 帳號視窗 ---------- */
+  function openUser() {
+    var body = $('userDlgBody'), title = $('userDlgTitle');
+    if (user) {
+      title.textContent = '我的帳號';
+      body.innerHTML = '<p><b>' + esc(user.displayName || '') + '</b><br><span class="hint">' + esc(user.email || '') + '</span></p>' +
+        '<div class="field"><label for="nickInput">在島上顯示的名字</label><input id="nickInput" maxlength="16" value="' + esc(profile.name) + '"></div>' +
+        '<p class="hint">學習紀錄會自動同步到雲端，換一台電腦登入同一個 Google 帳號也看得到。</p>' +
+        '<div><button class="btn" type="button" id="logoutBtn">登出</button></div>';
+      $('logoutBtn').onclick = function () { $('userDlg').close(); signOut(); };
+    } else if (fbReady) {
+      title.textContent = '用 Google 帳號登入';
+      body.innerHTML = '<p class="sub">登入後，星星、錯題和學習紀錄會存到你的帳號，在學校或家裡都能接著練習。</p>' +
+        '<div><button class="gbtn" type="button" id="gBtn"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>使用 Google 帳號登入</button></div>' +
+        '<p class="hint">沒有登入也能練習，紀錄會先存在這台電腦，登入時會自動合併。</p>';
+      $('gBtn').onclick = function () { $('userDlg').close(); signIn(); };
+    } else {
+      title.textContent = '本機模式';
+      body.innerHTML = '<p class="sub">這個網站還沒有設定 Google 登入，學習紀錄會存在這台電腦的瀏覽器裡。</p>' +
+        '<div class="field"><label for="nickInput">你的名字</label><input id="nickInput" maxlength="16" value="' + esc(profile.name) + '" placeholder="例如：小安"></div>' +
+        '<p class="hint">管理者只要在 js/firebase-config.js 填入 Firebase 設定，就會出現 Google 登入按鈕（步驟見 README）。</p>';
+    }
+    var nick = $('nickInput');
+    if (nick) nick.onchange = function () { profile.name = nick.value.trim().slice(0, 16); save(); renderUserChip(); renderHome(); };
+    $('userDlg').showModal();
+  }
+
+  /* ---------- 首頁地圖 ---------- */
+  var ISLES = {
+    chinese: { x: 150, y: 150, seed: 3 },
+    science: { x: 445, y: 135, seed: 7 },
+    social:  { x: 300, y: 305, seed: 11 }
+  };
+  function blob(cx, cy, r, seed, n) {
+    n = n || 9; var pts = [];
+    for (var i = 0; i < n; i++) {
+      var a = i / n * Math.PI * 2;
+      var k = 0.78 + 0.22 * Math.abs(Math.sin(seed * 1.7 + i * 2.3));
+      pts.push([cx + Math.cos(a) * r * 1.25 * k, cy + Math.sin(a) * r * 0.82 * k]);
+    }
+    var d = '';
+    for (var j = 0; j < n; j++) {
+      var p0 = pts[(j - 1 + n) % n], p1 = pts[j], p2 = pts[(j + 1) % n], p3 = pts[(j + 2) % n];
+      if (j === 0) d += 'M' + p1[0].toFixed(1) + ' ' + p1[1].toFixed(1);
+      var c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+      var c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+      d += 'C' + c1.map(function (v) { return v.toFixed(1); }).join(' ') + ' ' + c2.map(function (v) { return v.toFixed(1); }).join(' ') + ' ' + p2[0].toFixed(1) + ' ' + p2[1].toFixed(1);
+    }
+    return d + 'Z';
+  }
+  function icon(key, x, y, color) {
+    if (key === 'chinese') // 翻開的書與毛筆
+      return '<g transform="translate(' + x + ' ' + y + ')"><path d="M-30 -6 Q-15 -14 0 -6 Q15 -14 30 -6 L30 16 Q15 8 0 16 Q-15 8 -30 16Z" fill="#fff" stroke="' + color + '" stroke-width="2.5"/><path d="M0 -6V16" stroke="' + color + '" stroke-width="2"/><path d="M-22 0h14M-22 6h14M8 0h14M8 6h14" stroke="' + color + '" stroke-width="1.6" opacity=".6"/><path d="M20 -34 L8 -10" stroke="#5b3a1e" stroke-width="4" stroke-linecap="round"/><path d="M8 -10 l-3 7 6 -3z" fill="#222"/></g>';
+    if (key === 'science') // 大樹與小芽
+      return '<g transform="translate(' + x + ' ' + y + ')"><rect x="-4" y="-6" width="8" height="24" rx="2" fill="#7a5130"/><circle cx="0" cy="-20" r="20" fill="' + color + '"/><circle cx="-14" cy="-10" r="12" fill="' + color + '"/><circle cx="14" cy="-10" r="12" fill="' + color + '"/><circle cx="-5" cy="-26" r="6" fill="#fff" opacity=".25"/><path d="M22 18c0-8 6-10 10-10-1 6-5 9-10 10z" fill="' + color + '"/></g>';
+    return '<g transform="translate(' + x + ' ' + y + ')"><path d="M-26 0 L-8 -16 L10 0Z" fill="' + color + '"/><rect x="-22" y="0" width="28" height="18" fill="#fff" stroke="' + color + '" stroke-width="2"/><rect x="-11" y="6" width="7" height="12" fill="' + color + '"/><path d="M22 18V-30" stroke="#5b3a1e" stroke-width="3"/><path class="flag" d="M22 -30 L40 -24 L22 -18Z" fill="' + color + '"/><circle cx="22" cy="-31" r="2.5" fill="#ffd43b"/></g>';
+  }
+  var ISLE_STYLE = {
+    chinese: { grass: ['#ffb7a8', '#ff7f6e'], label: '#e8553f' },
+    science: { grass: ['#a6e58b', '#4fb860'], label: '#2f9a4c' },
+    social:  { grass: ['#ffe08a', '#f2b632'], label: '#d48a00' }
+  };
+  function reduceMotion() { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+  function decor(key, x, y) {
+    var anim = !reduceMotion();
+    if (key === 'chinese') // 從書本飄起的字
+      return ['字', '詩', '文'].map(function (ch, i) {
+        return '<text class="floaty" style="animation-delay:' + (i * 1.3) + 's" x="' + (x - 22 + i * 22) + '" y="' + (y - 18) + '" text-anchor="middle" font-size="16" font-weight="700" fill="#fff" stroke="#e8553f" stroke-width=".8">' + ch + '</text>';
+      }).join('');
+    if (key === 'science') // 繞著樹飛的蝴蝶
+      return '<g class="butterfly"><g class="flap"><ellipse cx="-5" cy="0" rx="6" ry="4.5" fill="#ff8ad8"/><ellipse cx="5" cy="0" rx="6" ry="4.5" fill="#ffd25e"/></g><rect x="-1" y="-4" width="2" height="8" rx="1" fill="#5b3a1e"/>' +
+        (anim ? '<animateMotion dur="7s" repeatCount="indefinite" path="M' + (x + 30) + ' ' + (y - 30) + ' c 20 -20 -10 -45 -35 -30 s -40 25 -20 40 s 45 10 55 -10z"/>' : '') + '</g>';
+    return ''; // 社會島的旗子在 icon 內會飄動
+  }
+  function renderMap() {
+    var gk = profile.grade || 'g5a', anim = !reduceMotion();
+    var svg = '<defs>' +
+      '<linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc8f2"/><stop offset="1" stop-color="#c8efff"/></linearGradient>' +
+      '<linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#45c1df"/><stop offset=".55" stop-color="#2a9ccc"/><stop offset="1" stop-color="#1c72a8"/></linearGradient>' +
+      '<radialGradient id="sunG"><stop offset="0" stop-color="#fff7b8"/><stop offset=".55" stop-color="#ffe066" stop-opacity=".55"/><stop offset="1" stop-color="#ffe066" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="shoalG"><stop offset=".6" stop-color="#b9f6ef"/><stop offset="1" stop-color="#7fe0e6" stop-opacity="0"/></radialGradient>';
+    SUBJECTS.forEach(function (s) { var st = ISLE_STYLE[s.key]; svg += '<linearGradient id="grass-' + s.key + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + st.grass[0] + '"/><stop offset="1" stop-color="' + st.grass[1] + '"/></linearGradient>'; });
+    svg += '</defs>' +
+      '<rect width="600" height="470" fill="url(#seaG)"/>' +
+      '<rect width="600" height="92" fill="url(#skyG)"/>' +
+      '<g class="sun"><circle cx="530" cy="46" r="46" fill="url(#sunG)"/><circle cx="530" cy="46" r="19" fill="#ffd43b"/></g>';
+    // 雲
+    [[60, 34, 1, 0], [300, 22, .8, -18], [460, 60, .65, -35]].forEach(function (c, i) {
+      svg += '<g class="cloud c' + i + '" style="animation-delay:' + c[3] + 's"><g transform="translate(' + c[0] + ' ' + c[1] + ') scale(' + c[2] + ')"><ellipse cx="0" cy="0" rx="34" ry="13" fill="#fff"/><ellipse cx="-14" cy="-8" rx="16" ry="12" fill="#fff"/><ellipse cx="10" cy="-12" rx="18" ry="14" fill="#fff"/></g></g>';
+    });
+    // 海平線與浪
+    svg += '<path d="M0 88 q 30 -8 60 0 t 60 0 t 60 0 t 60 0 t 60 0 t 60 0 t 60 0 t 60 0 t 60 0 t 60 0 V100 H0Z" fill="#45c1df"/>';
+    for (var r = 0; r < 7; r++) {
+      var y = 125 + r * 52;
+      svg += '<path class="wave' + (r % 2 ? ' w2' : '') + '" d="M-60 ' + y + ' q 20 -7 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0" stroke="#fff" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"/>';
+    }
+    // 閃光
+    [[95, 300], [520, 250], [470, 420], [70, 430], [230, 205], [560, 160], [380, 225], [200, 420]].forEach(function (p, i) {
+      svg += '<path class="twinkle" style="animation-delay:' + (i * .55) + 's" d="M' + p[0] + ' ' + (p[1] - 6) + ' l2 4 4 2 -4 2 -2 4 -2 -4 -4 -2 4 -2z" fill="#fff"/>';
+    });
+    // 航線
+    var route = 'M150 150 Q300 70 445 135 Q430 250 300 305 Q160 280 150 150';
+    svg += '<path class="route" d="' + route + '" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/>';
+    // 島嶼
+    SUBJECTS.forEach(function (s, idx) {
+      var p = ISLES[s.key], has = !!bank(gk, s.key), st = starCount(gk, s.key), sty = ISLE_STYLE[s.key];
+      svg += '<g class="isle' + (has ? '' : ' locked') + '" data-subj="' + s.key + '" tabindex="' + (has ? 0 : -1) + '" role="button" aria-label="' + s.island + (has ? '，' + st.got + ' 顆星' : '，建造中') + '">' +
+        '<ellipse class="ripple" style="animation-delay:' + (idx * .9) + 's" cx="' + p.x + '" cy="' + (p.y + 8) + '" rx="100" ry="66" fill="url(#shoalG)"/>' +
+        '<g class="bobber" style="animation-delay:' + (idx * .7) + 's">' +
+        '<path d="' + blob(p.x, p.y + 4, 66, p.seed) + '" fill="#f6d58e"/>' +
+        '<path d="' + blob(p.x, p.y, 64, p.seed) + '" fill="#ffe9b0"/>' +
+        '<path d="' + blob(p.x, p.y - 5, 50, p.seed + 2, 8) + '" fill="url(#grass-' + s.key + ')"/>' +
+        '<circle cx="' + (p.x - 38) + '" cy="' + (p.y + 18) + '" r="5" fill="#fff" opacity=".5"/><circle cx="' + (p.x + 42) + '" cy="' + (p.y + 10) + '" r="3.5" fill="#fff" opacity=".5"/>' +
+        icon(s.key, p.x, p.y - 4, s.key === 'science' ? '#1f7a3c' : sty.label) + decor(s.key, p.x, p.y - 4) +
+        '</g>' +
+        '<g transform="translate(' + p.x + ' ' + (p.y + 64) + ')"><rect x="-66" y="-17" width="132" height="34" rx="17" fill="' + sty.label + '" stroke="#fff" stroke-width="3"/><text class="isle-label" x="0" y="8" text-anchor="middle" fill="#fff">' + s.island + '</text></g>' +
+        '<g transform="translate(' + p.x + ' ' + (p.y + 98) + ')"><rect x="-44" y="-13" width="88" height="24" rx="12" fill="#ffffff" fill-opacity=".9"/><text x="0" y="5" text-anchor="middle" fill="' + sty.label + '" font-size="14" font-weight="700">' + (has ? '★ ' + st.got + ' / ' + st.max : '建造中') + '</text></g>' +
+        '</g>';
+    });
+    // 會跳的魚
+    svg += '<g class="fish"><g transform="translate(470 330)"><g class="fish-jump"><path d="M0 0 q10 -8 20 0 q-10 8 -20 0z" fill="#ff8f3f"/><path d="M0 0 l-7 -5 v10z" fill="#ff8f3f"/><circle cx="14" cy="-1" r="1.4" fill="#222"/></g></g></g>';
+    svg += '<g class="fish f2"><g transform="translate(90 370) scale(-1 1)"><g class="fish-jump"><path d="M0 0 q10 -8 20 0 q-10 8 -20 0z" fill="#ffd23f"/><path d="M0 0 l-7 -5 v10z" fill="#ffd23f"/><circle cx="14" cy="-1" r="1.4" fill="#222"/></g></g></g>';
+    // 海鷗
+    [[0, 0, 14], [1, -6, 19]].forEach(function (g) {
+      svg += '<g class="gull">' + '<path class="wing" d="M-9 0 q4.5 -6 9 0 q4.5 -6 9 0" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
+        (anim ? '<animateMotion dur="' + g[2] + 's" begin="' + g[1] + 's" repeatCount="indefinite" path="M-30 ' + (60 + g[0] * 30) + ' C 150 ' + (20 + g[0] * 20) + ' 380 ' + (120 - g[0] * 30) + ' 640 ' + (50 + g[0] * 20) + '"/>' : '') +
+        '</g>';
+    });
+    // 小船沿著航線航行
+    svg += '<g id="boat"' + (anim ? '' : ' transform="translate(300 215)"') + '><g class="bob"><path d="M-24 6 q24 8 48 0" stroke="#fff" stroke-opacity=".7" stroke-width="2" fill="none"/><path d="M-18 0 H18 L12 10 H-12Z" fill="#e8553f"/><path d="M-18 0 H18 L16.5 3 H-16.5Z" fill="#fff" opacity=".6"/><path d="M0 0 V-32" stroke="#5b3a1e" stroke-width="2.5"/><path d="M1 -31 L21 -6 H1Z" fill="#fff"/><path d="M-1 -26 L-15 -6 H-1Z" fill="#ffd43b"/><path d="M0 -32 l9 3 -9 3z" fill="#2f9a4c"/></g>' +
+      (anim ? '<animateMotion dur="28s" repeatCount="indefinite" path="M300 215 C 360 180 420 190 470 230 S 470 330 380 360 S 200 380 160 300 S 200 180 300 215"/>' : '') + '</g>';
+    var map = $('map'); map.innerHTML = svg;
+    map.querySelectorAll('.isle').forEach(function (el) {
+      var key = el.getAttribute('data-subj');
+      if (el.classList.contains('locked')) return;
+      function go() { sail(key, el); }
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    });
+  }
+  function sail(key, el) {
+    el = el || document.querySelector('.isle[data-subj="' + key + '"]');
+    if (el && !reduceMotion()) {
+      el.classList.add('picked');
+      setTimeout(function () { location.hash = '#isle-' + key; }, 420);
+    } else location.hash = '#isle-' + key;
+  }
+
+  function renderHome() {
+    var gk = profile.grade || 'g5a', gi = gradeInfo(gk);
+    $('homeGrade').textContent = gi ? gi.label : '';
+    var nm = profile.name || (user && user.displayName) || '';
+    $('hello').textContent = nm ? nm + '，歡迎登島！' : '歡迎登島！';
+    var total = 0, max = 0;
+    SUBJECTS.forEach(function (s) { var c = starCount(gk, s.key); total += c.got; max += c.max; });
+    $('totalStars').textContent = total; $('totalMax').textContent = '/ ' + max;
+    var ready = gradeReady(gk);
+    $('homeSub').textContent = ready ? '國語、自然、社會三座島，共 ' + max + ' 題。答對一題就點亮一顆星。' : '這個年級的島嶼還在建造中，可以先切換到五年級上學期練習。';
+    var done = profile.daily[today()];
+    $('dailyBtn').classList.toggle('done', !!done);
+    $('dailyBtn').hidden = !ready;
+    $('dailyDesc').textContent = done ? '今天已完成，答對 ' + done.score + ' / ' + done.total + '，想再挑戰也可以' : '每座島各兩題，共 6 題';
+    $('dailyBtn').querySelector('.daily-go').textContent = done ? '再航一次' : '出航';
+    var list = $('isleList'); list.innerHTML = '';
+    SUBJECTS.forEach(function (s) {
+      var b = bank(gk, s.key); var c = starCount(gk, s.key);
+      var li = document.createElement('li');
+      li.innerHTML = '<button type="button" class="isle-row" style="--c:' + s.color + '"' + (b ? '' : ' disabled') + '><span class="dot">' + s.name.charAt(0) + '</span><span><span class="nm">' + s.island + '</span><span class="pub">' + (b ? b.publisher : '建造中') + '</span><div class="bar"><span style="width:' + (c.max ? Math.round(c.got / c.max * 100) : 0) + '%"></span></div></span><span class="cnt">★ ' + c.got + ' / ' + c.max + '</span></button>';
+      if (b) li.firstChild.onclick = function () { sail(s.key); };
+      list.appendChild(li);
+    });
+    $('syncNote').textContent = user ? '已登入，紀錄會同步到你的 Google 帳號。' : (fbReady ? '尚未登入：紀錄先存在這台電腦，登入後會自動合併。' : '本機模式：紀錄存在這台電腦的瀏覽器。');
+    renderMap();
+  }
+
+  /* ---------- 科目島 ---------- */
+  var currentSubj = null;
+  function renderSubject(key) {
+    var gk = profile.grade || 'g5a', b = bank(gk, key), s = subjInfo(key);
+    if (!b) { location.hash = '#home'; return; }
+    currentSubj = key;
+    var view = $('view-subject'); view.style.setProperty('--c', s.color);
+    $('subjMeta').textContent = gradeInfo(gk).label + '・' + b.publisher;
+    $('subjName').textContent = s.island;
+    var c = starCount(gk, key);
+    $('subjStars').textContent = c.got; $('subjMax').textContent = '/ ' + c.max;
+    var wrongN = questionsOf(gk, key).filter(function (q) { return profile.wrong[q.id]; }).length;
+    $('subjMistakes').textContent = '錯題複習（' + wrongN + '）';
+    $('subjMistakes').disabled = !wrongN;
+    $('subjChallenge').onclick = function () { startQuiz({ label: s.island + '・全島挑戰', subj: key, qs: shuffle(questionsOf(gk, key)).slice(0, 15), replay: { type: 'all', subj: key } }); };
+    $('subjMistakes').onclick = function () { startQuiz({ label: s.island + '・錯題複習', subj: key, qs: shuffle(questionsOf(gk, key).filter(function (q) { return profile.wrong[q.id]; })).slice(0, 15), replay: { type: 'wrong', subj: key } }); };
+    var ol = $('unitList'); ol.innerHTML = '';
+    b.units.forEach(function (u, i) {
+      var uc = starCount(gk, key, u.id);
+      var parts = u.ai ? ['AI 出題', u.title] : u.title.split(/\s+/);
+      var li = document.createElement('li');
+      li.className = 'unit' + (uc.got === uc.max ? ' done' : '');
+      li.style.animationDelay = (i * 0.05) + 's';
+      li.innerHTML = '<span class="unit-no">' + esc(parts[0]) + '</span><h3>' + esc(parts.slice(1).join(' ') || u.title) + '</h3>' +
+        '<div class="unit-foot"><span class="unit-stars"><b>★</b> ' + uc.got + ' / ' + uc.max + '</span><button class="btn primary" type="button">' + (uc.got ? '再練習' : '開始') + '</button></div>';
+      li.querySelector('button').onclick = function () { startQuiz({ label: s.island + '・' + u.title, subj: key, qs: shuffle(questionsOf(gk, key, u.id)).slice(0, 10), replay: { type: 'unit', subj: key, unit: u.id } }); };
+      ol.appendChild(li);
+    });
+    show('subject');
+  }
+
+  /* ---------- 作答 ---------- */
+  var quiz = null;
+  function startQuiz(opt) {
+    if (!opt.qs.length) { toast('這裡目前沒有題目'); return; }
+    quiz = { label: opt.label, subj: opt.subj, replay: opt.replay, i: 0, results: [], newStars: 0, start: Date.now(),
+      qs: opt.qs.map(function (q) {
+        var order = shuffle(q.opts.map(function (_, k) { return k; }));
+        return Object.assign({}, q, { order: order });
+      }) };
+    show('quiz'); renderQ();
+  }
+  function colorOf(subj) { var s = subjInfo(subj); return s ? s.color : 'var(--sea)'; }
+  function renderQ() {
+    var q = quiz.qs[quiz.i], card = $('view-quiz');
+    card.style.setProperty('--c', colorOf(q.subj));
+    $('quizLabel').textContent = quiz.label;
+    $('quizCount').textContent = (quiz.i + 1) + ' / ' + quiz.qs.length;
+    $('quizBar').style.width = (quiz.i / quiz.qs.length * 100) + '%';
+    $('qUnit').textContent = (quiz.subj === 'mix' ? subjInfo(q.subj).island + '・' : '') + q.unit;
+    $('qText').textContent = q.q;
+    var box = $('qOpts'); box.innerHTML = '';
+    q.order.forEach(function (orig, k) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'opt'; b.dataset.orig = orig;
+      b.innerHTML = '<span class="key">' + 'ABCD'[k] + '</span><span>' + esc(q.opts[orig]) + '</span>';
+      b.onclick = function () { answer(orig); };
+      box.appendChild(b);
+    });
+    $('qExplain').hidden = true; $('qNext').hidden = true;
+    var all = q.q + q.opts.join('');
+    noZy($('qText'), all); noZy($('qOpts'), all); noZy($('qExplain'), all);
+  }
+  function answer(orig) {
+    var q = quiz.qs[quiz.i], ok = orig === q.ans;
+    $('qOpts').querySelectorAll('.opt').forEach(function (b) {
+      b.disabled = true;
+      var o = +b.dataset.orig;
+      if (o === q.ans) b.classList.add('right');
+      else if (o === orig) b.classList.add('wrong');
+    });
+    if (ok) {
+      if (!profile.stars[q.id]) { profile.stars[q.id] = 1; quiz.newStars++; }
+      delete profile.wrong[q.id];
+    } else {
+      profile.wrong[q.id] = (profile.wrong[q.id] || 0) + 1;
+    }
+    quiz.results.push({ q: q, pick: orig, ok: ok });
+    fx(ok, $('qOpts').querySelector('.opt.' + (ok ? 'right' : 'wrong')));
+    save();
+    var ex = $('qExplain');
+    ex.innerHTML = (ok ? '<b class="ok">答對了！</b> ' : '<b class="no">再想想：</b>正確答案是「' + esc(q.opts[q.ans]) + '」。') + esc(q.ex || '');
+    ex.hidden = false;
+    var nx = $('qNext'); nx.hidden = false;
+    nx.textContent = quiz.i === quiz.qs.length - 1 ? '看成績' : '下一題';
+    nx.focus();
+  }
+  /* ---------- 動畫效果 ---------- */
+  var FX_COLORS = ['#ff6f61', '#ffd43b', '#4fb860', '#45c1df', '#b07cff', '#ff8ad8'];
+  function confetti(x, y, n, spread) {
+    if (reduceMotion()) return;
+    var cv = document.createElement('canvas'), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.className = 'confetti'; cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
+    document.body.appendChild(cv);
+    var ctx = cv.getContext('2d'); ctx.scale(dpr, dpr);
+    var ps = [];
+    for (var i = 0; i < n; i++) {
+      var a = -Math.PI / 2 + (Math.random() - .5) * spread, v = 5 + Math.random() * 7;
+      ps.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: Math.random() * 6.28, vr: (Math.random() - .5) * .4, w: 6 + Math.random() * 5, h: 4 + Math.random() * 4, c: FX_COLORS[i % FX_COLORS.length] });
+    }
+    var t0 = performance.now();
+    (function frame(t) {
+      var k = (t - t0) / 1600;
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      ps.forEach(function (p) {
+        p.vy += .28; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+        ctx.save(); ctx.globalAlpha = Math.max(0, 1 - k * k); ctx.translate(p.x, p.y); ctx.rotate(p.r);
+        ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
+      });
+      if (k < 1) requestAnimationFrame(frame); else cv.remove();
+    })(t0);
+  }
+  function fx(ok, el) {
+    if (!el) return;
+    if (!ok) { el.classList.add('shake'); return; }
+    var r = el.getBoundingClientRect();
+    confetti(r.left + r.width * .2, r.top + r.height / 2, 28, 1.6);
+    var star = document.createElement('span'); star.className = 'plus-star'; star.textContent = '+1 ★';
+    star.style.left = (r.right - 70) + 'px'; star.style.top = (r.top + window.scrollY - 6) + 'px';
+    document.body.appendChild(star); setTimeout(function () { star.remove(); }, 1200);
+  }
+  function countUp(el, to) {
+    if (reduceMotion() || to <= 0) { el.textContent = to; return; }
+    var t0 = performance.now(), d = 700;
+    (function f(t) { var k = Math.min(1, (t - t0) / d); el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); })(t0);
+  }
+
+  $('qNext').onclick = function () { if (quiz.i < quiz.qs.length - 1) { quiz.i++; renderQ(); } else finishQuiz(); };
+  $('quitQuiz').onclick = function () { quiz = null; route(); };
+
+  function finishQuiz() {
+    var score = quiz.results.filter(function (r) { return r.ok; }).length, total = quiz.qs.length;
+    var gk = profile.grade || 'g5a';
+    profile.history.unshift({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), t: Date.now(), grade: gk, subj: quiz.subj, title: quiz.label, score: score, total: total, sec: Math.round((Date.now() - quiz.start) / 1000) });
+    profile.history = profile.history.slice(0, 500);
+    if (quiz.replay && quiz.replay.type === 'daily') profile.daily[today()] = { score: score, total: total };
+    save();
+    var v = $('view-result'); v.style.setProperty('--c', colorOf(quiz.subj === 'mix' ? 'social' : quiz.subj));
+    $('resLabel').textContent = quiz.label;
+    countUp($('resScore'), score); $('resTotal').textContent = '/ ' + total;
+    var pct = score / total;
+    var nStars = pct >= .9 ? 3 : pct >= .6 ? 2 : pct > 0 ? 1 : 0;
+    $('resBadge').innerHTML = [0, 1, 2].map(function (i) { return '<span class="big-star' + (i < nStars ? ' on' : '') + '" style="animation-delay:' + (.25 + i * .22) + 's">★</span>'; }).join('');
+    if (pct >= .6) setTimeout(function () { confetti(innerWidth / 2, innerHeight * .35, 90, 2.6); }, 350);
+    $('resMsg').textContent = pct === 1 ? '全部答對，太厲害了！' : pct >= .8 ? '表現很棒，再把錯的弄懂就完美了。' : pct >= .6 ? '不錯喔！看看下面的解析再挑戰一次。' : '別灰心，先看解析，再練一次會更好。';
+    $('resStars').textContent = quiz.newStars ? '這次新點亮 ' + quiz.newStars + ' 顆星 ★' : '這次沒有新的星星，換個關卡試試看。';
+    var wrong = quiz.results.filter(function (r) { return !r.ok; });
+    $('resReview').innerHTML = wrong.length ? '<h3>答錯的題目</h3>' + wrong.map(function (r) {
+      return '<div class="rv' + (window.Zhuyin && window.Zhuyin.revealsAnswer(r.q.q + r.q.opts.join('')) ? ' no-zy' : '') + '"><p>' + esc(r.q.q) + '</p><p class="yours">你的答案：' + esc(r.q.opts[r.pick]) + '</p><p class="ans">正確答案：' + esc(r.q.opts[r.q.ans]) + '</p><p class="hint">' + esc(r.q.ex) + '</p></div>';
+    }).join('') : '';
+    var last = quiz;
+    $('resAgain').onclick = function () { replay(last.replay, last.label, last.subj); };
+    $('resBack').onclick = function () { quiz = null; location.hash = last.subj === 'mix' ? '#home' : '#isle-' + last.subj; route(); };
+    show('result');
+  }
+  function replay(r, label, subj) {
+    var gk = profile.grade || 'g5a';
+    if (r.type === 'daily') return startDaily();
+    var qs = r.type === 'unit' ? shuffle(questionsOf(gk, subj, r.unit)).slice(0, 10)
+      : r.type === 'wrong' ? shuffle(questionsOf(gk, subj).filter(function (q) { return profile.wrong[q.id]; })).slice(0, 15)
+      : shuffle(questionsOf(gk, subj)).slice(0, 15);
+    if (!qs.length) { toast('錯題都複習完了！'); location.hash = '#isle-' + subj; route(); return; }
+    startQuiz({ label: label, subj: subj, qs: qs, replay: r });
+  }
+  function startDaily() {
+    var gk = profile.grade || 'g5a', qs = [];
+    SUBJECTS.forEach(function (s) {
+      var pool = questionsOf(gk, s.key);
+      var fresh = pool.filter(function (q) { return !profile.stars[q.id]; });
+      qs = qs.concat(shuffle(fresh.length >= 2 ? fresh : pool).slice(0, 2));
+    });
+    startQuiz({ label: '今日航線', subj: 'mix', qs: qs, replay: { type: 'daily' } });
+  }
+  $('dailyBtn').onclick = startDaily;
+
+  /* ---------- 學習紀錄 ---------- */
+  function fmtTime(t) { var d = new Date(t); function p(n) { return (n < 10 ? '0' : '') + n; } return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); }
+  function renderHistory() {
+    var h = profile.history;
+    var tq = 0, tr = 0, days = {};
+    h.forEach(function (x) { tq += x.total; tr += x.score; days[new Date(x.t).toDateString()] = 1; });
+    var gk = profile.grade || 'g5a', stars = 0, max = 0;
+    SUBJECTS.forEach(function (s) { var c = starCount(gk, s.key); stars += c.got; max += c.max; });
+    $('stats').innerHTML = [
+      ['練習次數', h.length], ['作答題數', tq], ['答對率', tq ? Math.round(tr / tq * 100) + '%' : '—'], ['學習天數', Object.keys(days).length], ['本年級星星', stars + ' / ' + max]
+    ].map(function (s) { return '<div class="stat"><div class="k">' + s[0] + '</div><div class="v">' + s[1] + '</div></div>'; }).join('');
+    $('logBody').innerHTML = h.map(function (x) {
+      var s = subjInfo(x.subj), gi = gradeInfo(x.grade);
+      return '<tr><td>' + fmtTime(x.t) + '</td><td>' + (gi ? gi.short : '') + '</td><td><span class="tag" style="--c:' + (s ? s.color : 'var(--sea)') + '">' + (s ? s.name : '綜合') + '</span></td><td>' + esc(x.title) + '</td><td class="num">' + x.score + ' / ' + x.total + '</td></tr>';
+    }).join('');
+    $('logEmpty').hidden = h.length > 0;
+    $('logBody').closest('.table-wrap').hidden = !h.length;
+    show('history');
+  }
+
+  /* ---------- 路由 ---------- */
+  function route() {
+    renderUserChip();
+    if (quiz && !$('view-quiz').hidden) return;
+    var h = location.hash.replace('#', '');
+    if (h.indexOf('isle-') === 0) renderSubject(h.slice(5));
+    else if (h === 'history') renderHistory();
+    else if (h === 'studio' && window.IslandStudio) { window.IslandStudio.render(); show('studio'); }
+    else { renderHome(); show('home'); }
+  }
+  window.addEventListener('hashchange', function () { quiz = null; route(); });
+  $('gradeChip').onclick = openGrade;
+  $('userChip').onclick = openUser;
+
+  window.IslandApp = {
+    GRADES: GRADES, SUBJECTS: SUBJECTS, toast: toast, route: route, esc: esc,
+    currentGrade: function () { return profile.grade || 'g5a'; },
+    allSets: allSets,
+    remoteSets: function () { return remoteSets; },
+    localSets: function () { return custom.sets; },
+    addSet: function (set) { custom.sets.push(set); saveCustom(); },
+    deleteSet: function (id) { custom.sets = custom.sets.filter(function (s) { return s.id !== id; }); if (custom.deleted.indexOf(id) < 0) custom.deleted.push(id); saveCustom(); },
+    importSets: function (sets) { var n = 0; sets.forEach(function (s) { if (s && s.id && s.qs) { custom.sets = custom.sets.filter(function (x) { return x.id !== s.id; }); custom.sets.push(s); custom.deleted = custom.deleted.filter(function (d) { return d !== s.id; }); n++; } }); saveCustom(); return n; },
+    markPublished: function () { custom.sets = []; custom.deleted = []; saveCustom(); },
+    setRemote: function (sets) { remoteSets = sets || []; }
+  };
+  function saveCustom() { try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(custom)); } catch (e) { toast('瀏覽器空間不足，題庫沒有存成功'); } }
+  // 讀取網站上已發布的 AI 題庫（GitHub Pages 上才有；直接開檔案時會略過）
+  if (location.protocol.indexOf('http') === 0) {
+    fetch('custom-questions.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d && d.sets) { remoteSets = d.sets; if (!quiz) route(); } }).catch(function () {});
+  }
+
+  route();
+  initFirebase();
+  if (!profile.grade) setTimeout(openGrade, 300);
+})();
+
+</script>
+</body>
+</html>
